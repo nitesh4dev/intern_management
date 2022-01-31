@@ -1,23 +1,13 @@
 import React, { useContext } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
-
 import Header from "./Header";
-
-import DashComponents from "./DashComponents";
-
-import Trends from "./Trends";
-import Timeline from "./TimeLine/Timeline";
 import { AuthContext } from "../Context/AuthContext";
-
 import { makeStyles } from "@material-ui/core";
 import DashboardHome from "./DashboardHome";
-import Settings from "./Settings";
-import Tickets from "./Tickets";
 import Javascript from "./Javascript";
-import Analytics from "./Analytics";
 import Python from "./Python";
 import Login from "./Login";
-import LoggedIn from "./LoggedIn";
+import LoggedIn from "./loggedincomponents/LoggedIn";
 import Gallery from "./loggedincomponents/Gallery";
 import Assignments from "./loggedincomponents/Assignments";
 import Openings from "./loggedincomponents/Openings";

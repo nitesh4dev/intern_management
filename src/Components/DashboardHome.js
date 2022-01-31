@@ -19,16 +19,11 @@ import {
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 
-import AttendanceGraph from "./allattended/AttendanceGraph";
 import { db } from "../firebase/Firebase";
 import firebase from "firebase/compat";
 import moment from "moment";
-import DashboardCards from "./allattended/DashboardCards";
-import WorkerTimeTrends from "./allattended/WorkerTimeTrends";
-import DashboardCards2 from "./allattended/DashboardCards2";
 import { DataContext } from "../Context/DataContext";
-import Truckcards from "./allattended/Truckcards";
-import DashboardTable from "./dashcomponents/DashboardTable";
+import DashCards from "./dashcomponents/DashCards";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -98,7 +93,7 @@ export default function DashboardHome() {
           </Typography>
         </Grid> */}
         <Grid item lg={12} xs={12}>
-          <Truckcards />
+          <DashCards />
         </Grid>
         {/* <Grid item lg={12} md={12} xs={12}>
           <DashboardTable />
