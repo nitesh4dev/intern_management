@@ -122,7 +122,7 @@ export default function Gallery() {
           </Carousel>
         </Grid>
 
-        <Grid item lg={5} md={6}>
+        {/* <Grid item lg={5} md={6}>
           <Card>
             <CardHeader title="Facegenie Compact" subheader="" />
             <CardContent>
@@ -156,7 +156,7 @@ export default function Gallery() {
               // autoPlay
             ></CardMedia>
           </Card>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Fragment>
   );

@@ -25,8 +25,6 @@ import {
 import { useHistory } from "react-router-dom";
 
 import { db } from "../firebase/Firebase";
-import firebase from "firebase/compat";
-import moment from "moment";
 import { DataContext } from "../Context/DataContext";
 
 const useStyles = makeStyles((theme) => ({
@@ -72,69 +70,97 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
 }));
-const AntTabs = withStyles({
-  root: {
-    borderBottom: "1px solid #e8e8e8",
-  },
-})(Tabs);
 
-const AntTab = withStyles((theme) => ({
-  root: {
-    textTransform: "none",
-    minWidth: 72,
-    fontWeight: theme.typography.fontWeightRegular,
-    marginRight: theme.spacing(3),
-    "&$selected": {
-      color: "#F72A1F",
-      fontWeight: theme.typography.fontWeightMedium,
-    },
-    "&:focus": {
-      color: "#F72A1F",
-    },
-  },
-  selected: {},
-}))((props) => <Tab disableRipple {...props} />);
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </div>
-  );
-}
 export default function Python() {
   const classes = useStyles();
-  const todaysDate = moment().format(" Do MMMM YYYY");
-
   const { title } = useContext(DataContext);
-  const [resolve, setResolve] = useState(false);
-  const [status, setStatus] = useState("in progress");
-  const [statusColor, setStatusColor] = useState("yellow");
-  const [value, setValue] = useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const [isLoading, setIsLoading] = useState();
+  const [openingList, setOpeningList] = useState();
 
-  const resolveFunc = () => {
-    setResolve(!resolve);
-    setStatus("resolved");
-    setStatusColor("lightgreen");
-  };
-
+  useEffect(() => {
+    setIsLoading(true);
+    db.collection("Internships")
+      .where("Domain", "==", "Python")
+      .get()
+      .then((querySnapshot) => {
+        const list = [];
+        querySnapshot.forEach((doc) => {
+          list.push(doc.data());
+        });
+        console.log(list);
+        setOpeningList(list);
+        setIsLoading(false);
+      });
+  }, []);
   return (
     <Container>
-      <Grid item lg={12} xs={12}>
-        <Typography variant="h1" className="mB20">
-          {title}
-        </Typography>
+      <Typography variant="h1" style={{ marginBottom: "20px" }}>
+        {title}
+      </Typography>
+      <Grid container spacing={3}>
+        {openingList?.map((opening, index) => (
+          <Grid item lg={12} md={12} xs={12} key={index}>
+            <Card elevation={2}>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <CardHeader
+                  titleTypographyProps={{ variant: "h4" }}
+                  title={opening.Title}
+                />
+              </Box>
+              <Divider />
+
+              <CardContent>
+                <Box
+                  className={classes.boxStyles}
+                  style={{ marginBottom: "20px" }}
+                >
+                  <Typography variant="body1">
+                    <b>Number of Openings: </b> {opening.NumberOfOpenings}
+                  </Typography>
+                  <Typography variant="body1">
+                    <b>Internship Duration:</b> {opening.Duration}
+                  </Typography>
+                  <Typography variant="body1">
+                    <b>Apply by:</b>{" "}
+                    {new Date(opening.ApplyBy.seconds * 1000)
+                      .toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                      .replace(/ /g, "-")}
+                  </Typography>
+                </Box>
+                <Typography variant="body1">
+                  <b>Internship Title:</b> {opening.Title}
+                </Typography>
+                <Typography variant="body1" style={{ marginBottom: "20px" }}>
+                  <b>Internship Domain:</b> {opening.Domain}
+                </Typography>
+                <Typography variant="body1">
+                  <b>Internship Description: </b>
+                  {opening.Description}
+                </Typography>
+              </CardContent>
+              <CardActions
+                style={{ justifyContent: "right", marginRight: "5px" }}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  // onClick={() => applyFunc(index)}
+                >
+                  Apply Now
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
     </Container>
   );

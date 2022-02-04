@@ -18,6 +18,8 @@ import {
 import PublishIcon from "@material-ui/icons/Publish";
 import { Alert } from "@material-ui/lab";
 import { AuthContext } from "../../Context/AuthContext";
+import { DataContext } from "../../Context/DataContext";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +78,7 @@ const style = {
 };
 export default function Openings() {
   const classes = useStyles();
+  const history = useHistory();
   const [applyButton, setApplyButton] = useState("Apply");
   const [success, setSuccess] = useState(false);
   const [assignmentSuccess, setAssignmentSuccess] = useState(false);
@@ -88,7 +91,10 @@ export default function Openings() {
   const [assignmentId, setAssignmentId] = useState("");
   const [appliedDate, setAppliedDate] = useState("");
   const [submissionStatus, setSubmissionStatus] = useState("");
+
+  // Context Datas
   const { user } = useContext(AuthContext);
+  const { setTitle } = useContext(DataContext);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleModalClose = () => setOpen(false);
@@ -107,13 +113,15 @@ export default function Openings() {
       docId &&
         docId.map((val) => {
           db.collection(`Internships/${val}/Applicants`)
-            .where("InternID", "==", `${user.userDocId}`)
+            .where("InternID", "==", `${user?.userDocId}`)
             .onSnapshot((res) => {
               let status = res.docs.map((doc) => doc.data().Status);
               const apply = res.docs.map((doc) => doc.data().AppliedOn);
               statusArr.push(status[0]);
+              console.log(apply[0]);
               setAppliedDate(apply[0]);
               setApplyButton(statusArr);
+              console.log(appliedDate);
             });
         });
     });
@@ -123,8 +131,8 @@ export default function Openings() {
   useEffect(() => {
     let submissionArr = [];
     assignmentId &&
-      assignmentId.map((val, index) => {
-        db.collection(`InternsProfile/${user.userDocId}/SubmittedAssignments`)
+      assignmentId.forEach((val, index) => {
+        db.collection(`InternsProfile/${user?.userDocId}/SubmittedAssignments`)
           .where("AssignmentId", "==", `${val}`)
           .onSnapshot((snapShot) => {
             const assignStatus = snapShot.docs.map(
@@ -150,8 +158,6 @@ export default function Openings() {
     setOpenings(dataArr);
   }, [applyButton]);
 
-  console.log(openings);
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -174,15 +180,17 @@ export default function Openings() {
       AppliedOn: new Date(),
       Domain: openings[index].Domain,
       Title: openings[index].Title,
+      Deadline: new Date(Date.now() + 24 * 60 * 60 * 1000 * 3),
     };
     const appliedToRef = await db
-      .collection(`InternsProfile/${user.userDocId}/AppliedTo`)
+      .collection(`InternsProfile/${user?.userDocId}/AppliedTo`)
       .doc();
     appliedToRef
       .set({
         OpeningDetails,
         OpeningId: openingsId[index],
         OpeningStatus: "applied",
+        AssignmentStatus: "received",
       })
       .then(() => {
         db.collection(`Internships/${openingsId[index]}/Applicants`)
@@ -375,10 +383,14 @@ export default function Openings() {
                           variant="contained"
                           color="primary"
                           size="small"
+                          onClick={() => {
+                            setTitle("Your Assignments");
+                            history.push("assignments");
+                          }}
                         >
                           View Assignment
                         </Button>
-                        {val.submissionStatus === "Submitted" ? (
+                        {/* {val.submissionStatus === "Submitted" ? (
                           <Button
                             variant="contained"
                             color="primary"
@@ -397,7 +409,7 @@ export default function Openings() {
                           >
                             Submit Assignment
                           </Button>
-                        )}
+                        )} */}
                       </Fragment>
                     ) : (
                       <Button

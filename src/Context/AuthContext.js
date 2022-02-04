@@ -2,12 +2,14 @@ import React, { createContext, useState, useEffect } from "react";
 import { auth, db } from "../firebase/Firebase";
 export const AuthContext = createContext();
 
-export default function AuthProvider(props) {
+export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+
+    // Get current user's data and id from the InternsProfile when the app loads
     auth.onAuthStateChanged((user) => {
       if (user) {
         db.collection("InternsProfile")
@@ -31,7 +33,9 @@ export default function AuthProvider(props) {
   }, [isAuthenticated]);
   console.log({ user, isAuthenticated });
 
+  // Logout logic
   const logout = () => {
+    //While signout() function runs, loading is set to true
     setIsLoading(true);
     auth
       .signOut()
@@ -43,9 +47,11 @@ export default function AuthProvider(props) {
         console.log(error);
       });
 
+    //Set loading to false once function is performed
     setIsLoading(false);
   };
 
+  //Login with email and password logic
   const login = (email, password) => {
     setIsLoading(true);
     auth
@@ -61,7 +67,7 @@ export default function AuthProvider(props) {
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
-      {props.children}
+      {children}
     </AuthContext.Provider>
   );
 }

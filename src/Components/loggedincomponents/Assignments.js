@@ -16,8 +16,10 @@ import {
 } from "@material-ui/core";
 import { db } from "../../firebase/Firebase";
 import { AuthContext } from "../../Context/AuthContext";
-import PublishIcon from "@material-ui/icons/Publish";
+
 import { Alert } from "@material-ui/lab";
+import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,6 +81,9 @@ export default function Assigments() {
   const classes = useStyles();
   const { user } = useContext(AuthContext);
 
+  // For redirecting
+  const history = useHistory();
+
   //snackbar states
   const [success, setSuccess] = useState(false);
   const [errorRegister, setErrorRegister] = useState(false);
@@ -90,31 +95,23 @@ export default function Assigments() {
     setErrorRegister(false);
   };
 
-  //modal states and functions
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleModalClose = () => setOpen(false);
-
   //card data states and functions
   const [data, setData] = useState(null);
   const [assignmentData, setAssignmentData] = useState(null);
   const [assignmentIds, setAssignmentIds] = useState(null);
-  const [applyStatus, setApplyStatus] = useState("Apply");
-  const [docFile, setDocFile] = useState("");
-  const [comments, setComments] = useState("");
+  const [applyStatus, setApplyStatus] = useState([]);
 
   useEffect(() => {
     let statusArr = [];
-    db.collection(`Assignments`).onSnapshot((snapshot) => {
-      const assignment = snapshot.docs.map((doc) => doc.data());
-      setData(assignment);
-    });
+
+    // Here Find all the internships where this applicant has applied
+    // Internships/J4n7OTVdVZpk851GL7aG /Applicants/user.DocId
     db.collection("Internships").onSnapshot((snapshot) => {
       const docId = snapshot.docs.map((doc) => doc.id);
       docId &&
-        docId.map((val) => {
+        docId.forEach((val) => {
           db.collection(`Internships/${val}/Applicants`)
-            .where("InternID", "==", `${user.userDocId}`)
+            .where("InternID", "==", `${user?.userDocId}`)
             .onSnapshot((res) => {
               let status = res.docs.map((doc) => doc.data().Status);
               statusArr.push(status[0]);
@@ -123,10 +120,22 @@ export default function Assigments() {
         });
     });
   }, []);
+
+  // Structure an Assignment data where all of it will have a applyStatus
   useEffect(() => {
+    // Find all assignment
+    db.collection(`Assignments`).onSnapshot((snapshot) => {
+      const assignment = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        const id = doc.id;
+        return { ...data, docId: id };
+      });
+      setData(assignment);
+    });
+
     let dataArr = [];
     data &&
-      data.map((val, index) => {
+      data.forEach((val, index) => {
         let dataObj = {
           ...val,
           applyStatus: applyStatus[index],
@@ -136,16 +145,8 @@ export default function Assigments() {
     setAssignmentData(dataArr);
   }, [applyStatus]);
 
-  console.log(assignmentData);
-
-  const viewDetailsFunc = () => {};
-
-  const handleImageUpload = (e) => {
-    setDocFile(e.target.files[0]);
-  };
-
-  const onChange = (e) => {
-    setComments(e.target.value);
+  const viewDetailsFunc = (assignmentDocId) => {
+    history.push(`/loggedin/assignments/${assignmentDocId}`);
   };
 
   return (
@@ -159,7 +160,7 @@ export default function Assigments() {
         {assignmentData &&
           assignmentData.map((val, index) => {
             return (
-              <Grid item lg={12} md={12} xs={12} key={index}>
+              <Grid item lg={6} md={6} xs={12} key={index}>
                 {val.applyStatus === "applied" ? (
                   <Card elevation={2}>
                     <Box
@@ -177,12 +178,11 @@ export default function Assigments() {
                     <CardContent>
                       <Box
                         className={classes.boxStyles}
-                        style={{ marginBottom: "20px" }}
+                        style={{ marginBottom: "5px" }}
                       >
                         <Typography variant="body1">
                           <b>Role : </b> {val.Role}
                         </Typography>
-
                         <Typography variant="body1">
                           <b>Submit by:</b>{" "}
                           {new Date(val.Deadline.seconds * 1000)
@@ -194,48 +194,27 @@ export default function Assigments() {
                             .replace(/ /g, "-")}
                         </Typography>
                       </Box>
-                      <Typography
+                      {/* <Typography
                         variant="body1"
                         style={{ marginBottom: "20px" }}
                       >
                         <b>Assignment Catergory:</b> {val.Category}
-                      </Typography>
-                      <Typography variant="body1">
+                      </Typography> */}
+                      {/* <Typography variant="body1">
                         <b>Assignment Description: </b>
                         {val.AssignmentDetails}
-                      </Typography>
+                      </Typography> */}
                     </CardContent>
                     <CardActions
                       style={{ justifyContent: "right", marginRight: "5px" }}
                     >
-                      <Fragment>
-                        {val.submissionStatus === "Submitted" ? (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            disabled={true}
-                            onClick={handleOpen}
-                          >
-                            Assignment Submitted
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            onClick={handleOpen}
-                          >
-                            Submit Assignment
-                          </Button>
-                        )}
-                      </Fragment>
-
                       <Button
                         variant="contained"
                         color="primary"
                         size="small"
-                        onClick={viewDetailsFunc}
+                        onClick={() => {
+                          viewDetailsFunc(val.docId);
+                        }}
                       >
                         View Details
                       </Button>
@@ -244,67 +223,6 @@ export default function Assigments() {
                 ) : (
                   <Fragment></Fragment>
                 )}
-
-                <Modal
-                  open={open}
-                  onClose={handleModalClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
-                >
-                  <Box sx={style}>
-                    <Typography
-                      id="modal-modal-title"
-                      variant="h2"
-                      component="h2"
-                    >
-                      Assignment Submission
-                    </Typography>
-                    <Typography
-                      id="modal-modal-description"
-                      style={{ margin: "20px 0 20px 0" }}
-                    >
-                      Upload your Assignment Documents below. The document must
-                      be a zip file or a mp4 file of the screenrecording of the
-                      working of your Assignment
-                    </Typography>
-                    <TextareaAutosize
-                      aria-label="minimum height"
-                      minRows={5}
-                      placeholder="Comments"
-                      style={{ width: "100%", marginBottom: "20px" }}
-                      onChange={(e) => onChange(e)}
-                    />
-                    <Box
-                      style={{
-                        marginBottom: "20px",
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        component="label"
-                        startIcon={<PublishIcon />}
-                      >
-                        Upload Documents
-                        <input
-                          type="file"
-                          hidden
-                          onChange={(e) => handleImageUpload(e)}
-                        />
-                      </Button>
-                      <Typography>{docFile.name}</Typography>
-                    </Box>
-                    <Button
-                      type="submit"
-                      color="primary"
-                      variant="contained"
-                      fullWidth
-                      className="mT20"
-                    >
-                      Submit Assignment
-                    </Button>
-                  </Box>
-                </Modal>
               </Grid>
             );
           })}

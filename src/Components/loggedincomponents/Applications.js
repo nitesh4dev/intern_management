@@ -45,9 +45,12 @@ const headings = [
   "Role",
   "Domain",
   "Applied On",
+  "Deadline Date",
   "Application Status",
+  "Assignment Status",
   "View Assignment",
 ];
+
 export default function Applications() {
   const classes = useStyles();
   const { user } = useContext(AuthContext);
@@ -56,16 +59,30 @@ export default function Applications() {
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [isApplicationLoading, setIsApplicationLoading] = useState(false);
 
   useEffect(() => {
-    db.collection(`InternsProfile/${user.userDocId}/AppliedTo`)
+    setIsApplicationLoading(true);
+    db.collection(`InternsProfile/${user?.userDocId}/AppliedTo`)
       .where("OpeningStatus", "==", "applied")
       .onSnapshot((snapshot) => {
         const applied = snapshot.docs.map((doc) => doc.data());
         setApplications(applied);
+        setIsApplicationLoading(false);
       });
   }, []);
-  console.log(applications);
+  //Deadline Calculation
+  // useEffect(() => {
+  //   if (isApplicationLoading) {
+  //     const updatedApplication = applications.map((doc) => {
+  //       //For each application compare today's date in millisecond with deadline from firebase
+  //       console.log(doc.OpeningDetails.Deadline.toDate());
+  //       const deadline = doc.OpeningDetails.Deadline.toDate();
+  //       const today = d;
+  //       return { ...doc, AssignmentStatus: "not submitted" };
+  //     });
+  //   }
+  // }, [applications]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -129,7 +146,19 @@ export default function Applications() {
                           })
                           .replace(/ /g, "-")}
                       </TableCell>
+                      <TableCell align="center">
+                        {new Date(row.OpeningDetails.Deadline.seconds * 1000)
+                          .toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })
+                          .replace(/ /g, "-")}
+                      </TableCell>
                       <TableCell align="center">{row.OpeningStatus}</TableCell>
+                      <TableCell align="center">
+                        {row.AssignmentStatus}
+                      </TableCell>
                       <TableCell align="center">
                         <Tooltip title="View Assignment">
                           <Link

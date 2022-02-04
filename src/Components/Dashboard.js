@@ -12,6 +12,8 @@ import Gallery from "./loggedincomponents/Gallery";
 import Assignments from "./loggedincomponents/Assignments";
 import Openings from "./loggedincomponents/Openings";
 import Applications from "./loggedincomponents/Applications";
+import AssignmentDetails from "./loggedincomponents/AssignmentDetails";
+import AllOpenings from "./AllOpenings";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -36,18 +38,28 @@ export default function Dashboard() {
       <div className={classes.contentBody}>
         <div className={classes.toolBar}></div>
         {user != null && <Redirect to="/loggedin/home" />}
-        {user == null && <Redirect to="/" />}
+
+        {/* TODO:  below code not needed since the route is already at "/"*/}
+        {/* {user == null && <Redirect to="/" />} */}
 
         <Switch>
           <Route path={`/`} component={DashboardHome} exact />
-          <Route path={`/javascript`} component={Javascript} />
-          <Route path={`/python`} component={Python} />
+          <Route path={`/:openingType`} component={AllOpenings} exact />
           <Route path={`/login`} component={Login} exact />
-          <Route path={`/loggedin/home`} component={LoggedIn} />
-          <Route path={`/loggedin/gallery`} component={Gallery} />
-          <Route path={`/loggedin/openings`} component={Openings} />
-          <Route path={`/loggedin/applications`} component={Applications} />
-          <Route path={`/loggedin/assignments`} component={Assignments} />
+          <Route path={`/loggedin/home`} component={LoggedIn} exact />
+          <Route path={`/loggedin/gallery`} component={Gallery} exact />
+          <Route path={`/loggedin/openings`} component={Openings} exact />
+          <Route
+            path={`/loggedin/applications`}
+            component={Applications}
+            exact
+          />
+          <Route path={`/loggedin/assignments`} component={Assignments} exact />
+          <Route
+            path={`/loggedin/assignments/:id`}
+            component={AssignmentDetails}
+            exact
+          />
 
           {/* <Route path={`/settings`} component={Settings} /> */}
         </Switch>

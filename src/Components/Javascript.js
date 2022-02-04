@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, Fragment } from "react";
 import {
   Paper,
   makeStyles,
@@ -73,34 +73,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const internshipDetails = [
-  {
-    internshipTitle: " Javascript Frontend Developer Intern ",
-    noOfOpenings: 1,
-    duration: "3 months",
-    applyBy: "30th January 2022",
-    internshipCategory: "Software Development",
-    description:
-      "We are looking for Enthusiastic candidates with a problem-solving mindset who believes that it is the skills that matter and not the degree. We at ResoluteaAI.in follow a skill-based approach to hiring the ideal candidate. Skilled interns are offered full-time employment post-internship completion based on Performance and openings.",
-  },
-  {
-    internshipTitle: " Javascript Fullstack Developer Intern ",
-    noOfOpenings: 1,
-    duration: "3 months",
-    applyBy: "30th January 2022",
-    internshipCategory: "Software Development",
-    description:
-      "We are looking for Enthusiastic candidates with a problem-solving mindset who believes that it is the skills that matter and not the degree. We at ResoluteaAI.in follow a skill-based approach to hiring the ideal candidate. Skilled interns are offered full-time employment post-internship completion based on Performance and openings.",
-  },
-];
-
 export default function Javascript() {
   const classes = useStyles();
   const todaysDate = moment().format(" Do MMMM YYYY");
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
-
+  const [openingList, setOpeningList] = useState();
   const { title } = useContext(DataContext);
-
+  useEffect(() => {
+    setIsLoading(true);
+    db.collection(`Internships`)
+      .where("Domain", "==", "Javascript")
+      .get()
+      .then((querySnapshot) => {
+        const list = [];
+        querySnapshot.forEach((doc) => {
+          list.push(doc.data());
+        });
+        setOpeningList(list);
+        setIsLoading(false);
+      });
+  }, []);
+  // TODO:
   const applyFunc = () => {
     history.push("/login");
   };
@@ -110,153 +104,71 @@ export default function Javascript() {
       <Typography variant="h1" style={{ marginBottom: "20px" }}>
         {title}
       </Typography>
-      {/* <iframe
-        src="https://docs.google.com/forms/d/e/1FAIpQLScDYfqMpgUk4h_Q5Wkns6QZmN85qxLz7CkFb8DuhRfTVOgmlA/viewform?embedded=true"
-        width="100%"
-        height="500"
-        frameBorder="0"
-        marginHeight="0"
-        marginWidth="0"
-        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-      >
-        Loading…
-      </iframe> */}
+
       <Grid container spacing={3}>
-        <Grid item lg={12} md={12} xs={12}>
-          <Card elevation={2}>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <CardHeader
-                // avatar={
-                //   <Avatar style={{ backgroundColor: "#FA2609" }}>
-                //     <WarningIcon />
-                //   </Avatar>
-                // }
-                titleTypographyProps={{ variant: "h4" }}
-                title="Javascript Frontend Developer Intern "
-              />
-            </Box>
-            <Divider />
-
-            <CardContent>
+        {openingList?.map((opening, index) => (
+          <Grid item lg={12} md={12} xs={12} key={index}>
+            <Card elevation={2}>
               <Box
-                className={classes.boxStyles}
-                style={{ marginBottom: "20px" }}
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
               >
-                {/* <Typography variant="body1">
-                  <b>Number of Openings: </b> 3
-                </Typography> */}
-                <Typography variant="body1">
-                  <b>Internship Duration:</b> 3 months
-                </Typography>
-                <Typography variant="body1">
-                  <b>Apply by:</b> 16th January 2022
-                </Typography>
+                <CardHeader
+                  titleTypographyProps={{ variant: "h4" }}
+                  title={opening.Title}
+                />
               </Box>
-              <Typography variant="body1">
-                <b>Internship Title:</b> Javascript Frontend Developer
-              </Typography>
-              <Typography variant="body1" style={{ marginBottom: "20px" }}>
-                <b>Internship Category:</b> Software Development
-              </Typography>
-              <Typography variant="body1">
-                <b>Internship Description:</b> We are looking for Enthusiastic
-                candidates with a problem-solving mindset who believes that it
-                is the skills that matter and not the degree. We at
-                ResoluteaAI.in follow a skill-based approach to hiring the ideal
-                candidate. Skilled interns are offered full-time employment
-                post-internship completion based on Performance and openings
-              </Typography>
-            </CardContent>
-            <CardActions
-              style={{ justifyContent: "right", marginRight: "5px" }}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={applyFunc}
-              >
-                Apply now
-                {/* <a
-                  href="https://forms.gle/3jY5pTm3Qqb8msJs5"
-                  target="_blank"
-                  style={{ textDecoration: "none", color: "#fff" }}
+              <Divider />
+
+              <CardContent>
+                <Box
+                  className={classes.boxStyles}
+                  style={{ marginBottom: "20px" }}
                 >
-                  Apply now
-                </a> */}
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
-
-        <Grid item lg={12} md={12} xs={12}>
-          <Card elevation={2}>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <CardHeader
-                // avatar={
-                //   <Avatar style={{ backgroundColor: "#FA2609" }}>
-                //     <WarningIcon />
-                //   </Avatar>
-                // }
-                titleTypographyProps={{ variant: "h4" }}
-                title="Javascript Fullstack Developer Intern "
-              />
-            </Box>
-            <Divider />
-
-            <CardContent>
-              <Box
-                className={classes.boxStyles}
-                style={{ marginBottom: "20px" }}
-              >
-                {/* <Typography variant="body1">
-                  <b>Number of Openings: </b> 3
-                </Typography> */}
+                  <Typography variant="body1">
+                    <b>Number of Openings: </b> {opening.NumberOfOpenings}
+                  </Typography>
+                  <Typography variant="body1">
+                    <b>Internship Duration:</b> {opening.Duration}
+                  </Typography>
+                  <Typography variant="body1">
+                    <b>Apply by:</b>{" "}
+                    {new Date(opening.ApplyBy.seconds * 1000)
+                      .toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                      .replace(/ /g, "-")}
+                  </Typography>
+                </Box>
                 <Typography variant="body1">
-                  <b>Internship Duration:</b> 3 months
+                  <b>Internship Title:</b> {opening.Title}
+                </Typography>
+                <Typography variant="body1" style={{ marginBottom: "20px" }}>
+                  <b>Internship Domain:</b> {opening.Domain}
                 </Typography>
                 <Typography variant="body1">
-                  <b>Apply by:</b> 16th January 2022
+                  <b>Internship Description: </b>
+                  {opening.Description}
                 </Typography>
-              </Box>
-              <Typography variant="body1">
-                <b>Internship Title:</b> Javascript Fullstack Developer
-              </Typography>
-              <Typography variant="body1" style={{ marginBottom: "20px" }}>
-                <b>Internship Category:</b> Software Development
-              </Typography>
-              <Typography variant="body1">
-                <b>Internship Description:</b> We are looking for Enthusiastic
-                candidates with a problem-solving mindset who believes that it
-                is the skills that matter and not the degree. We at
-                ResoluteaAI.in follow a skill-based approach to hiring the ideal
-                candidate. Skilled interns are offered full-time employment
-                post-internship completion based on Performance and openings
-              </Typography>
-            </CardContent>
-            <CardActions
-              style={{ justifyContent: "right", marginRight: "5px" }}
-            >
-              <Button variant="contained" color="primary" size="small">
-                <a
-                  href="https://forms.gle/3jY5pTm3Qqb8msJs5"
-                  target="_blank"
-                  style={{ textDecoration: "none", color: "#fff" }}
+              </CardContent>
+              <CardActions
+                style={{ justifyContent: "right", marginRight: "5px" }}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  // onClick={() => applyFunc(index)}
                 >
-                  Apply now
-                </a>
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
+                  Apply Now
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
     </Container>
   );
