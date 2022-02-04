@@ -9,6 +9,7 @@ import {
   Divider,
   Grid,
   makeStyles,
+  Snackbar,
   Typography,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
@@ -109,6 +110,14 @@ const AllOpenings = () => {
             </Grid>
           ))}
       </Grid>
+
+      {/* Snackbar for loading when the data loads */}
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        message="Loading"
+        open={isLoading}
+        autoHideDuration={6000}
+      />
     </Container>
   );
 };
