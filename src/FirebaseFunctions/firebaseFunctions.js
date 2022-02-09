@@ -1,6 +1,7 @@
 import { db } from "../firebase/Firebase";
+
+// Firebase function to get all documents where field == match
 export const getAllDocumentsWithWhere = async (collection, field, match) => {
-  console.log(collection, field, match);
   let list = await db
     .collection(collection)
     .where(field, "==", match)
@@ -16,4 +17,12 @@ export const getAllDocumentsWithWhere = async (collection, field, match) => {
       console.log(err);
     });
   return list;
+};
+
+// Firebase function to get all documents from a particular a collection
+export const getAllDocuments = async (collection) => {
+  let list = await db
+    .collection(collection)
+    .get()
+    .then((querySnaphot) => {});
 };

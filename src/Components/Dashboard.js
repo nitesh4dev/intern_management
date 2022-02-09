@@ -44,8 +44,8 @@ export default function Dashboard() {
 
         <Switch>
           <Route path={`/`} component={DashboardHome} exact />
-          <Route path={`/:openingType`} component={AllOpenings} exact /> 
           <Route path={`/login`} component={Login} exact />
+          <Route path={`/:openingType`} component={AllOpenings} exact />
           <Route path={`/loggedin/home`} component={LoggedIn} exact />
           <Route path={`/loggedin/gallery`} component={Gallery} exact />
           <Route path={`/loggedin/openings`} component={Openings} exact />

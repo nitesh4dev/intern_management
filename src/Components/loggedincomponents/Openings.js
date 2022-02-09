@@ -20,6 +20,7 @@ import { Alert } from "@material-ui/lab";
 import { AuthContext } from "../../Context/AuthContext";
 import { DataContext } from "../../Context/DataContext";
 import { useHistory } from "react-router-dom";
+import { timeStampToDateString } from "../../UtilityFunctions/utilityFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -86,8 +87,6 @@ export default function Openings() {
   const [openings, setOpenings] = useState(null);
   const [data, setData] = useState(null);
   const [openingsId, setOpeningsId] = useState(null);
-  const [docFile, setDocFile] = useState("");
-  const [comments, setComments] = useState("");
   const [assignmentId, setAssignmentId] = useState("");
   const [appliedDate, setAppliedDate] = useState("");
   const [submissionStatus, setSubmissionStatus] = useState("");
@@ -111,7 +110,7 @@ export default function Openings() {
       setData(docData);
       setOpeningsId(docId);
       docId &&
-        docId.map((val) => {
+        docId.forEach((val) => {
           db.collection(`Internships/${val}/Applicants`)
             .where("InternID", "==", `${user?.userDocId}`)
             .onSnapshot((res) => {
@@ -167,14 +166,6 @@ export default function Openings() {
     setErrorRegister(false);
   };
 
-  const handleImageUpload = (e) => {
-    setDocFile(e.target.files[0]);
-  };
-
-  const onChange = (e) => {
-    setComments(e.target.value);
-  };
-
   const applyFunc = async (index) => {
     const OpeningDetails = {
       AppliedOn: new Date(),
@@ -215,97 +206,6 @@ export default function Openings() {
       });
   };
 
-  const submissionFunc = (index) => {
-    // const submissionObj = {
-    //   ApplicantId: user.userDocId,
-    //   AppliedOn: appliedDate,
-    //   AssignmentStatus: "",
-    //   Comments: comments,
-    //   OpeningId: openingsId[index],
-    //   StorageUrl: " ",
-    // };
-    // console.log(submissionObj);
-    // const internsAssignment = {
-    //   AssignmentId: assignmentId[index],
-    //   Comments: comments,
-    //   Deadline: new Date(),
-    //   Submissions: "storagelink",
-    // };
-    let SubmissionDetails = {
-      Comments: comments,
-      StorageUrl: "",
-      SubmittedOn: new Date(),
-    };
-    const storageLink = storage
-      .child(
-        `Interns_Data/${user.userDocId}/${openings[index].Title}/ ${openingsId[index]}`
-      )
-      .put(docFile);
-    storageLink.on(
-      "state_changed",
-      (snapShot) => {
-        console.log(snapShot);
-      },
-      (err) => {
-        console.log(err);
-      },
-      () => {
-        storage
-          .child(
-            `Interns_Data/${user.userDocId}/${openings[index].Title}/ ${openingsId[index]}`
-          )
-          .getDownloadURL()
-          .then(async (fireBaseUrl) => {
-            console.log(assignmentId[index]);
-            let assignmentSubs = await db
-              .collection(`Assignments/${assignmentId[index]}/Submissions`)
-              .doc()
-              .set({
-                ApplicantId: user.userDocId,
-                AppliedOn: appliedDate,
-                AssignmentStatus: "Submitted",
-                Comments: comments,
-                OpeningId: openingsId[index],
-                StorageUrl: fireBaseUrl,
-              });
-            console.log(assignmentSubs);
-            await db
-              .collection(
-                `InternsProfile/${user.userDocId}/SubmittedAssignments`
-              )
-              .doc()
-              .set({
-                OpeningId: openingsId[index],
-                AssignmentId: assignmentId[index],
-                Comments: comments,
-                AssignmentStatus: "Submitted",
-                Deadline: "DeadlineDate",
-                SubmittedOn: new Date(),
-                SubmissionId: "",
-                AppliedOn: appliedDate,
-                StorageUrl: fireBaseUrl,
-              })
-              .then(() => {
-                alert("Successfully Submitted");
-                setAssignmentSuccess(true);
-                handleModalClose();
-              });
-            // await db
-            //   .collection(`InternsProfile/${user.userDocId}/AppliedTo`)
-            //   .where("OpeningId", "==", `${openingsId[index]}`)
-            //   .update({
-            //     ...SubmissionDetails,
-            //     StorageUrl: fireBaseUrl,
-            //   });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    );
-  };
-
-  const viewDetailsFunc = () => {};
   return (
     <Fragment>
       <Typography variant="h1" style={{ marginBottom: "20px" }}>
@@ -313,7 +213,7 @@ export default function Openings() {
       </Typography>
       <Grid container spacing={3}>
         {openings &&
-          openings.map((val, index) => {
+          openings.map((opening, index) => {
             return (
               <Grid item lg={12} md={12} xs={12} key={index}>
                 <Card elevation={2}>
@@ -324,7 +224,7 @@ export default function Openings() {
                   >
                     <CardHeader
                       titleTypographyProps={{ variant: "h4" }}
-                      title={val.Title}
+                      title={opening.Title}
                     />
                   </Box>
                   <Divider />
@@ -335,40 +235,34 @@ export default function Openings() {
                       style={{ marginBottom: "20px" }}
                     >
                       <Typography variant="body1">
-                        <b>Number of Openings: </b> {val.NumberOfOpenings}
+                        <b>Number of Openings: </b> {opening.NumberOfOpenings}
                       </Typography>
                       <Typography variant="body1">
-                        <b>Internship Duration:</b> {val.Duration}
+                        <b>Internship Duration:</b> {opening.Duration}
                       </Typography>
                       <Typography variant="body1">
                         <b>Apply by:</b>{" "}
-                        {new Date(val.ApplyBy.seconds * 1000)
-                          .toLocaleDateString("en-IN", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })
-                          .replace(/ /g, "-")}
+                        {timeStampToDateString(opening.ApplyBy)}
                       </Typography>
                     </Box>
                     <Typography variant="body1">
-                      <b>Internship Title:</b> {val.Title}
+                      <b>Internship Title:</b> {opening.Title}
                     </Typography>
                     <Typography
                       variant="body1"
                       style={{ marginBottom: "20px" }}
                     >
-                      <b>Internship Domain:</b> {val.Domain}
+                      <b>Internship Domain:</b> {opening.Domain}
                     </Typography>
                     <Typography variant="body1">
                       <b>Internship Description: </b>
-                      {val.Description}
+                      {opening.Description}
                     </Typography>
                   </CardContent>
                   <CardActions
                     style={{ justifyContent: "right", marginRight: "5px" }}
                   >
-                    {val.applyButton === "applied" ? (
+                    {opening.applyButton === "applied" ? (
                       <Fragment>
                         <Button
                           variant="contained"
@@ -377,7 +271,7 @@ export default function Openings() {
                           disabled={true}
                           onClick={() => applyFunc(index)}
                         >
-                          {val.applyButton}
+                          {opening.applyButton}
                         </Button>
                         <Button
                           variant="contained"
@@ -390,26 +284,6 @@ export default function Openings() {
                         >
                           View Assignment
                         </Button>
-                        {/* {val.submissionStatus === "Submitted" ? (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            disabled={true}
-                            onClick={handleOpen}
-                          >
-                            Assignment Submitted
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            onClick={handleOpen}
-                          >
-                            Submit Assignment
-                          </Button>
-                        )} */}
                       </Fragment>
                     ) : (
                       <Button
@@ -421,77 +295,8 @@ export default function Openings() {
                         Apply
                       </Button>
                     )}
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      onClick={viewDetailsFunc}
-                    >
-                      View Details
-                    </Button>
                   </CardActions>
                 </Card>
-                <Modal
-                  open={open}
-                  onClose={handleModalClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
-                >
-                  <Box sx={style}>
-                    <Typography
-                      id="modal-modal-title"
-                      variant="h2"
-                      component="h2"
-                    >
-                      Assignment Submission
-                    </Typography>
-                    <Typography
-                      id="modal-modal-description"
-                      style={{ margin: "20px 0 20px 0" }}
-                    >
-                      Upload your Assignment Documents below. The document must
-                      be a zip file or a mp4 file of the screenrecording of the
-                      working of your Assignment
-                    </Typography>
-                    <TextareaAutosize
-                      aria-label="minimum height"
-                      minRows={5}
-                      placeholder="Comments"
-                      style={{ width: "100%", marginBottom: "20px" }}
-                      onChange={(e) => onChange(e)}
-                    />
-                    <Box
-                      style={{
-                        marginBottom: "20px",
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        component="label"
-                        startIcon={<PublishIcon />}
-                      >
-                        Upload Documents
-                        <input
-                          type="file"
-                          hidden
-                          onChange={(e) => handleImageUpload(e)}
-                        />
-                      </Button>
-                      <Typography>{docFile.name}</Typography>
-                    </Box>
-                    <Button
-                      type="submit"
-                      color="primary"
-                      variant="contained"
-                      fullWidth
-                      className="mT20"
-                      onClick={() => submissionFunc(index)}
-                    >
-                      Submit Assignment
-                    </Button>
-                  </Box>
-                </Modal>
               </Grid>
             );
           })}

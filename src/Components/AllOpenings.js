@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { getAllDocumentsWithWhere } from "../FirebaseFunctions/firebaseFunctions";
 import { timeStampToDateString } from "../UtilityFunctions/utilityFunctions";
@@ -35,6 +36,12 @@ const AllOpenings = () => {
   const { openingType } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [openingList, setOpeningList] = useState();
+
+  // Direct to /login when the button its
+  const history = useHistory();
+  const applyFunc = () => {
+    history.push("/login");
+  };
   //Get Jobs based on opening Type
   useEffect(() => {
     setIsLoading(true);
@@ -101,7 +108,7 @@ const AllOpenings = () => {
                     variant="contained"
                     color="primary"
                     size="small"
-                    // onClick={() => applyFunc(index)}
+                    onClick={() => applyFunc(index)}
                   >
                     Apply Now
                   </Button>
@@ -110,14 +117,6 @@ const AllOpenings = () => {
             </Grid>
           ))}
       </Grid>
-
-      {/* Snackbar for loading when the data loads */}
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        message="Loading"
-        open={isLoading}
-        autoHideDuration={6000}
-      />
     </Container>
   );
 };
