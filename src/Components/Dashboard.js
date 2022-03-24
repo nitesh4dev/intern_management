@@ -14,6 +14,7 @@ import Openings from "./loggedincomponents/Openings";
 import Applications from "./loggedincomponents/Applications";
 import AssignmentDetails from "./loggedincomponents/AssignmentDetails";
 import AllOpenings from "./AllOpenings";
+import MyProfile from "./loggedincomponents/MyProfile";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -47,6 +48,7 @@ export default function Dashboard() {
           <Route path={`/login`} component={Login} exact />
           <Route path={`/:openingType`} component={AllOpenings} exact />
           <Route path={`/loggedin/home`} component={LoggedIn} exact />
+          <Route path={`/loggedin/myprofile`} component={MyProfile} exact />
           <Route path={`/loggedin/gallery`} component={Gallery} exact />
           <Route path={`/loggedin/openings`} component={Openings} exact />
           <Route
