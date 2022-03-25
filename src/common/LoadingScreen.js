@@ -1,6 +1,6 @@
 // import { css } from "@emotion/core";
 import { Grid, makeStyles } from "@material-ui/core";
-import GridLoader from "react-spinners/GridLoader";
+import { GridLoader } from "react-spinners";
 
 // const override = css`
 //   width: 100%;
