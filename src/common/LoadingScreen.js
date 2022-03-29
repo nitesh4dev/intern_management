@@ -2,7 +2,7 @@
 import { Grid, makeStyles } from "@material-ui/core";
 import { GridLoader } from "react-spinners";
 
-const override = css`
+const override = `
   width: 100%;
   display: block;
   margin: 0 auto;
