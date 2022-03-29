@@ -54,16 +54,18 @@ export default function SelectedSignup() {
   const [formData, setFormdata] = useState({
     email: "",
     password: "",
+    name: "",
+    confirmPassword: "",
   });
 
   const onChange = (e) =>
     setFormdata({ ...formData, [e.target.name]: e.target.value });
-  const { email, password } = formData;
+  const { email, password, name, confirmPassword } = formData;
 
   //LOGIN CLIENT
   const handleLogin = () => {
     // If both email and password fields are present
-    if (!email || !password) {
+    if (!email || !password || !name || !confirmPassword) {
       console.log("Fill all the details");
       callSnackbar(true, "Please fill both the fields", "warning");
       return;
@@ -71,12 +73,23 @@ export default function SelectedSignup() {
 
     // Check if the email matches the format we need
     let splittedEmail = email.split(".");
-    if (splittedEmail[1] !== "resoluteai@gmail")
+    if (splittedEmail[1] !== "resoluteai@gmail") {
       callSnackbar(
         true,
         `Email doesn't match with the Resoluteai.in format`,
         `warning`
       );
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      callSnackbar(
+        true,
+        `Confirm password doesn't match original password`,
+        "warning"
+      );
+      return;
+    }
     // login(email, password);
   };
   return (
@@ -99,7 +112,16 @@ export default function SelectedSignup() {
 
           <ValidatorForm>
             <TextValidator
-              placeholder="Email Address"
+              label="Full Name"
+              className={classes.textFields}
+              fullWidth
+              variant="outlined"
+              name="name"
+              value={name}
+              onChange={(e) => onChange(e)}
+              validators={["required"]}
+            />
+            <TextValidator
               label="Email Address"
               className={classes.textFields}
               fullWidth
@@ -111,7 +133,6 @@ export default function SelectedSignup() {
               errorMessages={["This field is required", "Not a valid email ID"]}
             />
             <TextValidator
-              placeholder="Password"
               type="password"
               label="Password"
               className={classes.textFields}
@@ -123,6 +144,18 @@ export default function SelectedSignup() {
               validators={["required"]}
               errorMessages={["This field is required"]}
             />
+            <TextValidator
+              type="password"
+              label="Confirm Password"
+              className={classes.textFields}
+              fullWidth
+              variant="outlined"
+              name="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => onChange(e)}
+              validators={["required"]}
+              errorMessages={["This field is required"]}
+            />
             <Button
               variant="contained"
               color="primary"
@@ -130,7 +163,7 @@ export default function SelectedSignup() {
               type="submit"
               onClick={() => handleLogin()}
             >
-              Login
+              Sign Up
             </Button>
           </ValidatorForm>
 
