@@ -49,6 +49,7 @@ export default function Dashboard() {
           <Route path={`/:openingType`} component={AllOpenings} exact />
           <Route path={`/loggedin/home`} component={LoggedIn} exact />
           <Route path={`/loggedin/myprofile`} component={MyProfile} exact />
+
           <Route path={`/loggedin/gallery`} component={Gallery} exact />
           <Route path={`/loggedin/openings`} component={Openings} exact />
           <Route

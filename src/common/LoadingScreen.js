@@ -2,12 +2,12 @@
 import { Grid, makeStyles } from "@material-ui/core";
 import { GridLoader } from "react-spinners";
 
-// const override = css`
-//   width: 100%;
-//   display: block;
-//   margin: 0 auto;
-//   border-color: #f72a1f;
-// `;
+const override = `
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+  border-color: #f72a1f;
+`;
 
 const useStyle = makeStyles((theme) => ({
   loaderBox: {
@@ -29,17 +29,7 @@ function LoadingScreen() {
       alignContent="center"
       className={classes.loaderBox}
     >
-      <GridLoader
-        color="#F72A1F"
-        loading={true}
-        css={{
-          width: "100%",
-          display: "block",
-          margin: "0 auto",
-          borderColor: "#f72a1f",
-        }}
-        size={20}
-      />
+      <GridLoader color="#F72A1F" loading={true} css={override} size={20} />
     </Grid>
   );
 }
