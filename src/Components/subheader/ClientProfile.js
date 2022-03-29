@@ -28,7 +28,6 @@ import {
 import clsx from "clsx";
 import { AuthContext } from "../../Context/AuthContext";
 import { useHistory } from "react-router-dom";
-import { DataContext } from "../../Context/DataContext";
 
 const useStyles = makeStyles((theme) => ({
   profileSection: {
@@ -59,7 +58,6 @@ export default function ClientProfile() {
   const classes = useStyles();
   let history = useHistory();
   const { logout } = useContext(AuthContext);
-  const { setTitle } = useContext(DataContext);
 
   //context property from Authcontext
   // const { client: { Profile_image, Email, Username } } = useContext(AuthContext);
@@ -121,8 +119,7 @@ export default function ClientProfile() {
         <MenuItem
           onClick={() => {
             handleClose();
-            history.push("/loggedin/myprofile");
-            setTitle("My Profile");
+            history.push("/ams/profile-settings");
           }}
         >
           <ListItemIcon>

@@ -13,7 +13,6 @@ import {
   TrendingUp,
   SettingsApplications,
 } from "@material-ui/icons";
-import PersonIcon from "@material-ui/icons/Person";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import DataUsageIcon from "@material-ui/icons/DataUsage";
 import TimelineIcon from "@material-ui/icons/Timeline";
@@ -212,16 +211,6 @@ export default function Header() {
       onClick: () => {
         setTitle("Home");
         history.push("/loggedin/home");
-      },
-    },
-    {
-      text: "My Profile",
-      icon: (
-        <PersonIcon color={title === "My Profile" ? "primary" : "default"} />
-      ),
-      onClick: () => {
-        setTitle("My Profile");
-        history.push("/loggedin/myprofile");
       },
     },
     {
