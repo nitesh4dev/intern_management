@@ -6,20 +6,25 @@ import { BrowserRouter as Router } from "react-router-dom";
 import DataProvide from "./Context/DataContext";
 import Routes from "./routes/Routes";
 import AuthProvider from "./Context/AuthContext";
+import SnackbarProvider from "./Context/SnackbarContext";
+import CustomSnackBar from "./common/CustomSnackbar";
 
 function App() {
   return (
     <div className="App">
-      <DataProvide>
-        <AuthProvider>
-          <ThemeProvider theme={customTheme}>
-            <Router>
-              <Dashboard />
-              <Routes />
-            </Router>
-          </ThemeProvider>
-        </AuthProvider>
-      </DataProvide>
+      <ThemeProvider theme={customTheme}>
+        <DataProvide>
+          <AuthProvider>
+            <SnackbarProvider>
+              <Router>
+                <CustomSnackBar />
+                <Dashboard />
+                <Routes />
+              </Router>
+            </SnackbarProvider>
+          </AuthProvider>
+        </DataProvide>
+      </ThemeProvider>
     </div>
   );
 }
