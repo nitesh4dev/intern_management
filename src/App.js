@@ -21,6 +21,7 @@ function App() {
             </Router>
           </AuthProvider>
         </SnackbarProvider>
+
       </ThemeProvider>
     </div>
   );

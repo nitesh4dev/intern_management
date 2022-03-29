@@ -1,35 +1,37 @@
-import { css } from "@emotion/core";
-import {
-    Grid,
-    makeStyles
-} from '@material-ui/core'
-import GridLoader from "react-spinners/GridLoader";
+// import { css } from "@emotion/core";
+import { Grid, makeStyles } from "@material-ui/core";
+import { GridLoader } from "react-spinners";
 
 const override = css`
   width: 100%;
   display: block;
   margin: 0 auto;
-  border-color: #F72A1F;
+  border-color: #f72a1f;
 `;
 
 const useStyle = makeStyles((theme) => ({
-    loaderBox: {
-        maxWidth: "90px",
-        marginLeft: "auto",
-        marginRight: "auto",
-        height: "100vh"
-
-    }
-}))
+  loaderBox: {
+    maxWidth: "90px",
+    marginLeft: "auto",
+    marginRight: "auto",
+    height: "100vh",
+  },
+}));
 
 function LoadingScreen() {
-    const classes = useStyle();
+  const classes = useStyle();
 
-    return (
-        <Grid container direction="column" justify="center" alignContent="center" className={classes.loaderBox}>
-            <GridLoader color="#F72A1F" loading={true} css={override} size={20} />
-        </Grid>
-    );
+  return (
+    <Grid
+      container
+      direction="column"
+      justify="center"
+      alignContent="center"
+      className={classes.loaderBox}
+    >
+      <GridLoader color="#F72A1F" loading={true} css={override} size={20} />
+    </Grid>
+  );
 }
 
 export default LoadingScreen;
