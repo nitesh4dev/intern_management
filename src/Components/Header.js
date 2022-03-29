@@ -4,15 +4,12 @@ import resoluteaiLogo from "../assets/images/resoluteai-logo.png";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { db } from "../firebase/Firebase";
 import {
-  PersonAddTwoTone,
-  Settings,
   Menu,
   ExitToApp,
   ChevronLeft,
   ChevronRight,
-  TrendingUp,
-  SettingsApplications,
   Person,
+  FileCopy,
 } from "@material-ui/icons";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import DataUsageIcon from "@material-ui/icons/DataUsage";
@@ -215,6 +212,14 @@ export default function Header() {
       onClick: () => {
         setTitle("My Profile");
         history.push("/loggedin/myprofile");
+      },
+    },
+    {
+      text: "Document",
+      icon: <FileCopy color={title === "Document" ? "primary" : "default"} />,
+      onClick: () => {
+        setTitle("Document");
+        history.push("/loggedin/document");
       },
     },
     {
