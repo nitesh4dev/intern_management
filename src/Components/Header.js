@@ -41,6 +41,7 @@ import {
   DialogContent,
   Grid,
   Button,
+  Box,
 } from "@material-ui/core";
 import ClientProfile from "./subheader/ClientProfile";
 import Notifications from "./subheader/Notifications";
@@ -111,6 +112,11 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     paddingTop: "15px",
     paddingBottom: "30px",
+  },
+
+  redirectBox: {
+    display: "flex",
+    columnGap: theme.spacing(4),
   },
 }));
 
@@ -191,17 +197,6 @@ export default function Header() {
         history.push("/python");
       },
     },
-
-    // {
-    //   text: "Settings",
-    //   icon: (
-    //     <SettingsIcon color={title === "Settings" ? "primary" : "default"} />
-    //   ),
-    //   onClick: () => {
-    //     setTitle("Settings");
-    //     history.push("/settings");
-    //   },
-    // },
   ];
 
   const loggedInListItem = [
@@ -291,11 +286,20 @@ export default function Header() {
               <ClientProfile />{" "}
             </Fragment>
           ) : (
-            <Link to={"/login"} style={{ textDecoration: "none" }}>
-              <Typography variant="body1" color="primary">
-                Login
-              </Typography>
-            </Link>
+            <Fragment>
+              <Box className={classes.redirectBox}>
+                <Link to={"/selected-login"} style={{ textDecoration: "none" }}>
+                  <Typography variant="body1" color="primary">
+                    Already a selected Applicant?
+                  </Typography>
+                </Link>
+                <Link to={"/login"} style={{ textDecoration: "none" }}>
+                  <Typography variant="body1" color="primary">
+                    Login
+                  </Typography>
+                </Link>
+              </Box>
+            </Fragment>
           )}
         </Toolbar>
       </AppBar>

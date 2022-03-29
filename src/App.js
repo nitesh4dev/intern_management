@@ -13,17 +13,15 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={customTheme}>
-        <DataProvide>
+        <SnackbarProvider>
           <AuthProvider>
-            <SnackbarProvider>
-              <Router>
-                <CustomSnackBar />
-                <Dashboard />
-                <Routes />
-              </Router>
-            </SnackbarProvider>
+            <Router>
+              <CustomSnackBar />
+              <Routes />
+            </Router>
           </AuthProvider>
-        </DataProvide>
+        </SnackbarProvider>
+
       </ThemeProvider>
     </div>
   );

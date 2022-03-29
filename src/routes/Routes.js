@@ -10,13 +10,11 @@ import Login from "../Components/Login";
 import DashboardRoutes from "./DashboardRoutes";
 
 export default function Routes() {
-  
   return (
     <Router>
-
       <Switch>
         {/* <Route path={`/login`} component={Login} exact /> */}
-        <Route path={"/"} component={DashboardRoutes} exact />
+        <Route path={"/"} component={DashboardRoutes} />
         {/* <Route path={`/dashboard`} component={DashboardRoutes} /> */}
       </Switch>
     </Router>
