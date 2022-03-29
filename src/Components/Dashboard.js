@@ -16,6 +16,7 @@ import AssignmentDetails from "./loggedincomponents/AssignmentDetails";
 import AllOpenings from "./AllOpenings";
 import SelectedLogin from "./SelectedLogin";
 import SelectedSignup from "./SelectedSignup";
+import MyProfile from "./loggedincomponents/MyProfile";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {

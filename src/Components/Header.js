@@ -12,6 +12,7 @@ import {
   ChevronRight,
   TrendingUp,
   SettingsApplications,
+  Person,
 } from "@material-ui/icons";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import DataUsageIcon from "@material-ui/icons/DataUsage";
@@ -206,6 +207,14 @@ export default function Header() {
       onClick: () => {
         setTitle("Home");
         history.push("/loggedin/home");
+      },
+    },
+    {
+      text: "My Profile",
+      icon: <Person color={title === "My Profile" ? "primary" : "default"} />,
+      onClick: () => {
+        setTitle("My Profile");
+        history.push("/loggedin/myprofile");
       },
     },
     {
