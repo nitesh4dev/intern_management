@@ -81,11 +81,11 @@ export default function MyProfile() {
                 ></Avatar>
               </Box>
             </Grid>
-            <Grid item lg={9} md={5} xs={12}>
+            <Grid item lg={9} md={9} xs={12}>
               <Box className={classes.typoMargin}>
                 <Typography variant="h2" className={classes.typoMargin}>
                   Ashish H
-                  <Tooltip title={`View Resume`}>
+                  <Tooltip title={`Edit Profile`}>
                     <IconButton onClick={() => setShowEdit(!showEdit)}>
                       <EditIcon />
                     </IconButton>
@@ -131,8 +131,23 @@ export default function MyProfile() {
                   </Grid>
                 </Grid>
               </Box>
-              <Typography variant="body1">Profile Completion 50%</Typography>
-              <EffectiveProgressBar variant="determinate" value={50} />
+              <Box style={{ display: "flex", justifyContent: "space-between" }}>
+                <Box width="50%">
+                  <Typography variant="body1">
+                    Profile Completion 50%
+                  </Typography>
+                  <EffectiveProgressBar variant="determinate" value={50} />
+                </Box>
+                <Box width="50%" textAlign="center">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={() => setShowEdit(!showEdit)}
+                  >
+                    Complete Profile
+                  </Button>
+                </Box>
+              </Box>
             </Grid>
             {/* <Grid item lg={4} md={4} xs={12}>
               <Box>
