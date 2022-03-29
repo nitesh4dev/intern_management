@@ -14,7 +14,8 @@ import Openings from "./loggedincomponents/Openings";
 import Applications from "./loggedincomponents/Applications";
 import AssignmentDetails from "./loggedincomponents/AssignmentDetails";
 import AllOpenings from "./AllOpenings";
-import MyProfile from "./loggedincomponents/MyProfile";
+import SelectedLogin from "./SelectedLogin";
+import SelectedSignup from "./SelectedSignup";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -40,16 +41,14 @@ export default function Dashboard() {
         <div className={classes.toolBar}></div>
         {user != null && <Redirect to="/loggedin/home" />}
 
-        {/* TODO:  below code not needed since the route is already at "/"*/}
-        {/* {user == null && <Redirect to="/" />} */}
-
         <Switch>
           <Route path={`/`} component={DashboardHome} exact />
           <Route path={`/login`} component={Login} exact />
+          <Route path={"/selected-signup"} component={SelectedSignup} exact />
+          <Route path={`/selected-login`} component={SelectedLogin} exact />
           <Route path={`/:openingType`} component={AllOpenings} exact />
           <Route path={`/loggedin/home`} component={LoggedIn} exact />
           <Route path={`/loggedin/myprofile`} component={MyProfile} exact />
-
           <Route path={`/loggedin/gallery`} component={Gallery} exact />
           <Route path={`/loggedin/openings`} component={Openings} exact />
           <Route

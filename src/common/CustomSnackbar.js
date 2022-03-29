@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import { Snackbar, Typography } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { SnackbarContext } from "../Context/SnackbarContext";
-
 export default function CustomSnackBar() {
   const { snackbarOpen, snackbarType, snackbarMessage, callSnackbar } =
     useContext(SnackbarContext);
@@ -18,7 +17,7 @@ export default function CustomSnackBar() {
     <div>
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity={snackbarType}>
