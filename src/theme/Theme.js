@@ -5,6 +5,9 @@ export const customTheme = createTheme({
     primary: {
       main: "#FA2609",
     },
+    success: {
+      main: "#4caf50",
+    },
   },
   typography: {
     fontFamily: "'Poppins',sans-serif",

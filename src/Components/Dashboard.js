@@ -53,7 +53,7 @@ export default function Dashboard() {
           <Route path={`/loggedin/myprofile`} component={MyProfile} exact />
           <Route path={`/loggedin/gallery`} component={Gallery} exact />
           <Route path={`/loggedin/openings`} component={Openings} exact />
-          <Route path={`/loggedin/document`} component={Document} exact />
+          <Route path={`/loggedin/documents`} component={Document} exact />
           <Route
             path={`/loggedin/applications`}
             component={Applications}

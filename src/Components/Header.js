@@ -215,11 +215,11 @@ export default function Header() {
       },
     },
     {
-      text: "Document",
-      icon: <FileCopy color={title === "Document" ? "primary" : "default"} />,
+      text: "Documents",
+      icon: <FileCopy color={title === "Documents" ? "primary" : "default"} />,
       onClick: () => {
-        setTitle("Document");
-        history.push("/loggedin/document");
+        setTitle("Documents");
+        history.push("/loggedin/documents");
       },
     },
     {
