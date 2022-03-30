@@ -16,22 +16,23 @@ import React, { Fragment, useState } from "react";
 import Agreement from "./Agreement";
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import { Check, Close } from "@material-ui/icons";
+import DocumentIcon from "../../common/DocumentIcon";
 
 const useStyles = makeStyles((theme) => ({
-  badgeStylesAgreed: {
-    "& .MuiBadge-colorPrimary": {
-      backgroundColor: theme.palette.success.main,
-    },
-  },
-  badgeStylesDeclined: {
-    "& .MuiBadge-colorPrimary": {
-      backgroundColor: theme.palette.primary.main,
-    },
-  },
   modalContainer: {
     textAlign: "center",
     paddingTop: "15px",
     paddingBottom: "30px",
+  },
+
+  linkStyle: {
+    textDecoration: "none",
+    "&:visited": {
+      color: "black",
+    },
+    "&:visited": {
+      color: "black",
+    },
   },
 }));
 
@@ -47,18 +48,22 @@ const Document = () => {
     {
       documentTitle: "AadharCard.pdf",
       agreed: false,
+      documentURL: "www.afadf.com",
     },
     {
       documentTitle: "PANCard.pdf",
       agreed: false,
+      documentURL: "www.afadf.com",
     },
     {
       documentTitle: "Photo.jpeg",
       agreed: false,
+      documentURL: "www.afadf.com",
     },
     {
       documentTitle: "Resume.pdf",
       agreed: false,
+      documentURL: "www.afadf.com",
     },
   ]);
 
@@ -70,6 +75,10 @@ const Document = () => {
   };
 
   const agreeFunc = (indextoChange) => {
+    // Check if terms are already agreed for the particular document
+    if (dataState[indextoChange].agreed) {
+      return;
+    }
     const newData = dataState.map((val, index) => {
       let obj = val;
       if (indextoChange === index) {
@@ -82,43 +91,41 @@ const Document = () => {
 
   return (
     <Fragment>
+      <Typography variant="h1" style={{ marginBottom: "20px" }}>
+        Documents
+      </Typography>
       <Card>
         <CardContent>
           {/* <Agreement /> */}
-          <Typography variant="h1" style={{ marginBottom: "20px" }}>
-            Documents
-          </Typography>
+
           <Grid container spacing={3}>
             {dataState.map((val, index) => {
               return (
                 <>
                   <Grid item lg={2} md={3} xs={6} key={index}>
                     <Box style={{ textAlign: "center" }}>
-                      <IconButton
-                        onClick={() => {
-                          setIndex(index);
-                          setModelOpen(true);
-                        }}
-                      >
-                        <Badge
-                          badgeContent={
-                            val.agreed ? (
-                              <Check style={{ fontSize: "10px" }} />
-                            ) : (
-                              <Close style={{ fontSize: "10px" }} />
-                            )
-                          }
-                          color="primary"
-                          className={
-                            val.agreed
-                              ? classes.badgeStylesAgreed
-                              : classes.badgeStylesDeclined
-                          }
+                      {val.agreed ? (
+                        <a
+                          className={classes.linkStyle}
+                          href={val.documentURL}
+                          target="_blank"
+                          rel="noreferrer"
                         >
-                          <InsertDriveFileIcon style={{ fontSize: "50px" }} />
-                        </Badge>
-                      </IconButton>
-                      <Typography>{val.documentTitle}</Typography>
+                          <DocumentIcon
+                            setIndex={setIndex}
+                            index={index}
+                            setModelOpen={setModelOpen}
+                            fileData={val}
+                          />
+                        </a>
+                      ) : (
+                        <DocumentIcon
+                          setIndex={setIndex}
+                          index={index}
+                          setModelOpen={setModelOpen}
+                          fileData={val}
+                        />
+                      )}
                     </Box>
                   </Grid>
                 </>
