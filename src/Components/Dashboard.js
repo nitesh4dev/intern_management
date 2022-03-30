@@ -18,6 +18,7 @@ import SelectedLogin from "./SelectedLogin";
 import SelectedSignup from "./SelectedSignup";
 import MyProfile from "./loggedincomponents/MyProfile";
 import Document from "./loggedincomponents/Document";
+import ExitForm from "./loggedincomponents/ExitForm";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -54,6 +55,7 @@ export default function Dashboard() {
           <Route path={`/loggedin/gallery`} component={Gallery} exact />
           <Route path={`/loggedin/openings`} component={Openings} exact />
           <Route path={`/loggedin/documents`} component={Document} exact />
+          <Route path={`/loggedin/exit-form`} component={ExitForm} exact />
           <Route
             path={`/loggedin/applications`}
             component={Applications}

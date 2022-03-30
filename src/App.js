@@ -11,7 +11,7 @@ import CustomSnackBar from "./common/CustomSnackbar";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundColor: "rgb(250, 251, 251)" }}>
       <ThemeProvider theme={customTheme}>
         <SnackbarProvider>
           <AuthProvider>
@@ -21,7 +21,6 @@ function App() {
             </Router>
           </AuthProvider>
         </SnackbarProvider>
-
       </ThemeProvider>
     </div>
   );

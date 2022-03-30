@@ -11,11 +11,6 @@ import {
   Person,
   FileCopy,
 } from "@material-ui/icons";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import DataUsageIcon from "@material-ui/icons/DataUsage";
-import TimelineIcon from "@material-ui/icons/Timeline";
-import InsertChartIcon from "@material-ui/icons/InsertChart";
-import SettingsIcon from "@material-ui/icons/Settings";
 import BookIcon from "@material-ui/icons/Book";
 import ConfirmationNumberIcon from "@material-ui/icons/ConfirmationNumber";
 import { Home } from "@material-ui/icons";
@@ -253,6 +248,14 @@ export default function Header() {
       onClick: () => {
         setTitle("Your Assignments");
         history.push("/loggedin/assignments");
+      },
+    },
+    {
+      text: "Exit Form",
+      icon: <ExitToApp color={title === "Exit Form" ? "primary" : "default"} />,
+      onClick: () => {
+        setTitle("Exit Form");
+        history.push("/loggedin/exit-form");
       },
     },
     {
