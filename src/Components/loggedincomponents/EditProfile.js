@@ -118,6 +118,7 @@ export default function EditProfile() {
     altContactPersonNo: "",
     domain: "",
     designation: "",
+    internshipPeriod: "",
     workMode: "",
     bankName: "",
     accHolderName: "",
@@ -142,6 +143,7 @@ export default function EditProfile() {
     altContactPersonNo,
     domain,
     designation,
+    internshipPeriod,
     workMode,
     bankName,
     accHolderName,
@@ -206,6 +208,7 @@ export default function EditProfile() {
     },
     domain,
     designation,
+    internshipPeriod,
     startDate,
     endDate,
     workMode,
@@ -251,6 +254,7 @@ export default function EditProfile() {
       altContactPersonNo: "",
       domain: "",
       designation: "",
+      internshipPeriod: "",
       workMode: "",
       bankName: "",
       accHolderName: "",
@@ -296,6 +300,7 @@ export default function EditProfile() {
         !altContactPersonNo ||
         !domain ||
         !designation ||
+        !internshipPeriod ||
         !startDate ||
         !endDate ||
         !workMode ||
@@ -610,8 +615,8 @@ export default function EditProfile() {
                     label="Internship Period (in months) *"
                     validators={["required"]}
                     errorMessages={["This field is required"]}
-                    name="domain"
-                    value={domain}
+                    name="internshipPeriod"
+                    value={internshipPeriod}
                     onChange={(e) => {
                       onChange(e);
                     }}

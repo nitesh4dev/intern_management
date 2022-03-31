@@ -46,22 +46,17 @@ const Document = () => {
   const [index, setIndex] = useState("");
   const [dataState, setDataState] = useState([
     {
-      documentTitle: "AadharCard.pdf",
+      documentTitle: "NDA",
       agreed: false,
       documentURL: "www.afadf.com",
     },
     {
-      documentTitle: "PANCard.pdf",
+      documentTitle: "Terms And Conditions",
       agreed: false,
       documentURL: "www.afadf.com",
     },
     {
-      documentTitle: "Photo.jpeg",
-      agreed: false,
-      documentURL: "www.afadf.com",
-    },
-    {
-      documentTitle: "Resume.pdf",
+      documentTitle: "Agreement",
       agreed: false,
       documentURL: "www.afadf.com",
     },

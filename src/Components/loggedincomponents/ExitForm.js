@@ -154,7 +154,6 @@ const ExitForm = () => {
           <Paper
             style={{
               padding: "20px 40px 20px 40px",
-              margin: "20px 0 20px 0",
               borderRadius: "3",
             }}
             elevation={3}
