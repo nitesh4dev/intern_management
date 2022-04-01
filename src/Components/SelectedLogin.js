@@ -48,7 +48,7 @@ export default function SelectedLogin() {
   const classes = useStyles();
   const history = useHistory();
 
-  const { user, login } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const { callSnackbar } = useContext(SnackbarContext);
   //Form state
   const [formData, setFormdata] = useState({
@@ -68,13 +68,10 @@ export default function SelectedLogin() {
       callSnackbar(true, "Please fill both the fields", "warning");
       return;
     }
-    // login(email, password);
+    login(email, password);
   };
   return (
     <Grid container component="main" className={classes.root}>
-      {/* <Hidden smDown>
-        <Grid container md={7} className={classes.image}></Grid>
-      </Hidden> */}
       <Grid
         item
         xs={12}
@@ -86,18 +83,8 @@ export default function SelectedLogin() {
       >
         <Box className={classes.formHolder} mx="auto">
           <img src={ResoluteAILogo} alt="FaceGenieLogo" width="50%" />
-          {/* <Typography variant="subtitle1" className={classes.heading}>
-            Facegenie Super Admin
-          </Typography> */}
-          <Box textAlign="center" className={classes.marginTop3}>
-            {/* <Button
-              startIcon={<ArrowBack />}
-              // onClick={() => setGoBack(true)}
-              color="primary"
-            >
-              Go back
-            </Button> */}
-          </Box>
+
+          <Box textAlign="center" className={classes.marginTop3}></Box>
           <Typography variant="h2" className={classes.heading}>
             Enter your Resoluteai.in details to login
           </Typography>
@@ -133,7 +120,10 @@ export default function SelectedLogin() {
               color="primary"
               fullWidth
               type="submit"
-              onClick={() => handleLogin()}
+              onClick={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
             >
               Login
             </Button>

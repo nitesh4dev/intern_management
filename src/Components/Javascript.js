@@ -1,33 +1,20 @@
-import React, { useEffect, useState, useContext, Fragment } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
-  Paper,
   makeStyles,
   Typography,
   Box,
   Button,
-  FormGroup,
-  Checkbox,
-  FormControlLabel,
   Divider,
-  Avatar,
   Grid,
   Card,
   CardContent,
   CardHeader,
-  CardMedia,
   CardActions,
-  IconButton,
   Container,
-  withStyles,
-  Tabs,
-  Tab,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
-
 import { db } from "../firebase/Firebase";
-import firebase from "firebase/compat";
-import moment from "moment";
 import { DataContext } from "../Context/DataContext";
+import { AuthContext } from "../Context/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,9 +62,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Javascript() {
   const classes = useStyles();
-  const todaysDate = moment().format(" Do MMMM YYYY");
-  const [isLoading, setIsLoading] = useState(false);
-  const history = useHistory();
+
+  const { setIsLoading } = useContext(AuthContext);
   const [openingList, setOpeningList] = useState();
   const { title } = useContext(DataContext);
   useEffect(() => {
@@ -94,10 +80,6 @@ export default function Javascript() {
         setIsLoading(false);
       });
   }, []);
-  // TODO:
-  const applyFunc = () => {
-    history.push("/login");
-  };
 
   return (
     <Container>

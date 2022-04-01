@@ -1,31 +1,21 @@
 import React, { useEffect, useState, useContext } from "react";
 import {
-  Paper,
   makeStyles,
   Typography,
   Box,
   Button,
-  FormGroup,
-  Checkbox,
-  FormControlLabel,
   Divider,
-  Avatar,
   Grid,
   Card,
   CardContent,
   CardHeader,
-  CardMedia,
   CardActions,
-  IconButton,
   Container,
-  withStyles,
-  Tabs,
-  Tab,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
 
 import { db } from "../firebase/Firebase";
 import { DataContext } from "../Context/DataContext";
+import { AuthContext } from "../Context/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Python() {
   const classes = useStyles();
   const { title } = useContext(DataContext);
-  const [isLoading, setIsLoading] = useState();
+  const { setIsLoading } = useContext(AuthContext);
   const [openingList, setOpeningList] = useState();
 
   useEffect(() => {

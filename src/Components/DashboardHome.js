@@ -1,74 +1,8 @@
-import React, { useEffect, useState, useContext } from "react";
-import {
-  Paper,
-  makeStyles,
-  Typography,
-  Box,
-  Button,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  TextField,
-  Divider,
-  Grid,
-  Card,
-  CardContent,
-  CardHeader,
-  hexToRgb,
-  Container,
-} from "@material-ui/core";
-import { useHistory } from "react-router-dom";
-
-import { db } from "../firebase/Firebase";
-import firebase from "firebase/compat";
-import moment from "moment";
-import { DataContext } from "../Context/DataContext";
+import React from "react";
+import { Typography, Grid, Container } from "@material-ui/core";
 import DashCards from "./dashcomponents/DashCards";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& .MuiSelect-root": {
-      padding: theme.spacing(1, 4),
-    },
-  },
-  container: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  card: {
-    // boxShadow: "0 8px 40px -12px rgba(0,0,0,0.3)",
-    padding: theme.spacing(4, 3),
-    marginBottom: "40px",
-    width: "48%",
-  },
-  cards: {
-    // boxShadow: "0 8px 40px -12px rgba(0,0,0,0.3)",
-    padding: theme.spacing(4, 3),
-    marginBottom: "40px",
-    width: "48%",
-    height: "400px",
-  },
-  cardss: {
-    padding: theme.spacing(4, 3),
-    marginBottom: "40px",
-    width: "100%",
-    height: "420px",
-  },
-  cardHeading: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  datetimeBox: {
-    marginRight: "20px",
-  },
-}));
 export default function DashboardHome() {
-  const classes = useStyles();
-  const todaysDate = moment().format(" Do MMMM YYYY");
-
-  const { title } = useContext(DataContext);
-
   return (
     <Container>
       {/* <Grid item lg={12} xs={12}>
