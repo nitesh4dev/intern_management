@@ -24,6 +24,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import { Link, useHistory } from "react-router-dom";
 import dummyprofile from "../../assets/images/dummy-profile-img.jpeg";
 import EditProfile from "./EditProfile";
+import { AuthContext } from "../../Context/AuthContext";
 
 const AttendenceProgressBar = withStyles(() => ({
   root: {
@@ -62,13 +63,16 @@ const useStyles = makeStyles((theme) => ({
 export default function MyProfile() {
   let history = useHistory();
   const classes = useStyles();
+  const { user } = useContext(AuthContext);
   const [showEdit, setShowEdit] = useState(false);
   const [candidateData, setCandidateData] = useState({});
   const [profileStatus, setProfileStatus] = useState(false);
+  console.log(user);
 
   useEffect(() => {
+    if (!user) return;
     db.collection(`SelectedCandidates`)
-      .doc("iILElFjEsRQuVRT6OMM3")
+      .doc(user.userDocId)
       .get()
       .then((res) => {
         setProfileStatus(res.data().candidateDetails.profileComplete);
@@ -81,7 +85,7 @@ export default function MyProfile() {
 
   const showEditFunc = () => {
     db.collection(`SelectedCandidates`)
-      .doc("iILElFjEsRQuVRT6OMM3")
+      .doc(user.userDocId)
       .get()
       .then((res) => {
         setCandidateData(res.data());
@@ -91,7 +95,7 @@ export default function MyProfile() {
       });
   };
 
-  // console.log(profileStatus);
+  console.log(profileStatus);
   return (
     <Fragment>
       <Card>

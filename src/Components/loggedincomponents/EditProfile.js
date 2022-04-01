@@ -30,6 +30,7 @@ import PublishIcon from "@material-ui/icons/Publish";
 import moment from "moment";
 import { SnackbarContext } from "../../Context/SnackbarContext";
 import { db } from "../../firebase/Firebase";
+import { AuthContext } from "../../Context/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -91,6 +92,7 @@ const skills = [
 
 export default function EditProfile({ candidateData }) {
   const classes = useStyles();
+  const { user } = useContext(AuthContext);
   const candidateDetails = candidateData?.candidateDetails;
   const { callSnackbar } = useContext(SnackbarContext);
   const [loading, setLoading] = useState(false);
@@ -129,26 +131,27 @@ export default function EditProfile({ candidateData }) {
 
   useEffect(() => {
     setFormData({
-      fullName: candidateDetails?.basicDetails.fullName,
-      collegeName: candidateDetails?.basicDetails.collegeName,
-      email: candidateDetails?.basicDetails.email,
-      phoneNumber: candidateDetails?.basicDetails.phoneNumber,
-      location: candidateDetails?.basicDetails.location,
-      qualification: candidateDetails?.basicDetails.qualification,
-      parentName: candidateDetails?.basicDetails.parentName,
-      altContactPersonName: candidateDetails?.basicDetails.altContactPersonName,
-      altContactPersonNo: candidateDetails?.basicDetails.altContactPersonNo,
-      experienceDetails: candidateDetails?.basicDetails.experienceDetails,
-      domain: candidateDetails?.internshipDetails.domain,
-      designation: candidateDetails?.internshipDetails.designation,
-      internshipPeriod: candidateDetails?.internshipDetails.internshipPeriod,
-      workMode: candidateDetails?.internshipDetails.workMode,
-      bankName: candidateDetails?.bankDetails.bankName,
-      accHolderName: candidateDetails?.bankDetails.accHolderName,
-      accNumber: candidateDetails?.bankDetails.accNumber,
-      branchName: candidateDetails?.bankDetails.branchName,
-      isfcCode: candidateDetails?.bankDetails.isfcCode,
-      linkedInUrl: candidateDetails?.attachments.linkedInUrl,
+      fullName: candidateDetails?.basicDetails?.fullName,
+      collegeName: candidateDetails?.basicDetails?.collegeName,
+      email: candidateDetails?.basicDetails?.email,
+      phoneNumber: candidateDetails?.basicDetails?.phoneNumber,
+      location: candidateDetails?.basicDetails?.location,
+      qualification: candidateDetails?.basicDetails?.qualification,
+      parentName: candidateDetails?.basicDetails?.parentName,
+      altContactPersonName:
+        candidateDetails?.basicDetails?.altContactPersonName,
+      altContactPersonNo: candidateDetails?.basicDetails?.altContactPersonNo,
+      experienceDetails: candidateDetails?.basicDetails?.experienceDetails,
+      domain: candidateDetails?.internshipDetails?.domain,
+      designation: candidateDetails?.internshipDetails?.designation,
+      internshipPeriod: candidateDetails?.internshipDetails?.internshipPeriod,
+      workMode: candidateDetails?.internshipDetails?.workMode,
+      bankName: candidateDetails?.bankDetails?.bankName,
+      accHolderName: candidateDetails?.bankDetails?.accHolderName,
+      accNumber: candidateDetails?.bankDetails?.accNumber,
+      branchName: candidateDetails?.bankDetails?.branchName,
+      isfcCode: candidateDetails?.bankDetails?.isfcCode,
+      linkedInUrl: candidateDetails?.attachments?.linkedInUrl,
     });
   }, [candidateDetails]);
 
@@ -308,6 +311,7 @@ export default function EditProfile({ candidateData }) {
         !parentName ||
         !altContactPersonName ||
         !altContactPersonNo ||
+        !experienceDetails ||
         !domain ||
         !designation ||
         !internshipPeriod ||
@@ -332,10 +336,11 @@ export default function EditProfile({ candidateData }) {
       } else {
         setLoading(true);
         try {
+          if (!user) return;
           db.collection(`SelectedCandidates`)
-            .doc("iILElFjEsRQuVRT6OMM3")
+            .doc(user.userDocId)
             .update({
-              candidateDetails: data,
+              candidateDetails: { ...data, profileComplete: true },
             });
           callSnackbar(true, "Details saved successfully", "success");
           setHandleAllReset();
