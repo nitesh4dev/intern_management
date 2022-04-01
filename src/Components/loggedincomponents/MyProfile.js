@@ -63,6 +63,35 @@ export default function MyProfile() {
   let history = useHistory();
   const classes = useStyles();
   const [showEdit, setShowEdit] = useState(false);
+  const [candidateData, setCandidateData] = useState({});
+  const [profileStatus, setProfileStatus] = useState(false);
+
+  useEffect(() => {
+    db.collection(`SelectedCandidates`)
+      .doc("iILElFjEsRQuVRT6OMM3")
+      .get()
+      .then((res) => {
+        setProfileStatus(res.data().candidateDetails.profileComplete);
+        console.log(res.data().candidateDetails.profileComplete);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const showEditFunc = () => {
+    db.collection(`SelectedCandidates`)
+      .doc("iILElFjEsRQuVRT6OMM3")
+      .get()
+      .then((res) => {
+        setCandidateData(res.data());
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // console.log(profileStatus);
   return (
     <Fragment>
       <Card>
@@ -132,21 +161,36 @@ export default function MyProfile() {
                 </Grid>
               </Box>
               <Box style={{ display: "flex", justifyContent: "space-between" }}>
-                <Box width="50%">
-                  <Typography variant="body1">
-                    Profile Completion 50%
-                  </Typography>
-                  <EffectiveProgressBar variant="determinate" value={50} />
-                </Box>
-                <Box width="50%" textAlign="center">
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={() => setShowEdit(!showEdit)}
-                  >
-                    Complete Profile
-                  </Button>
-                </Box>
+                {profileStatus ? (
+                  <>
+                    <Box width="100%">
+                      <Typography variant="body1">Profile Completed</Typography>
+                      <EffectiveProgressBar variant="determinate" value={100} />
+                    </Box>{" "}
+                  </>
+                ) : (
+                  <>
+                    <Box width="50%">
+                      <Typography variant="body1">
+                        Profile Completion 50%
+                      </Typography>
+                      <EffectiveProgressBar variant="determinate" value={50} />
+                    </Box>
+
+                    <Box width="50%" textAlign="center">
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={() => {
+                          showEditFunc();
+                          setShowEdit(!showEdit);
+                        }}
+                      >
+                        Complete Profile
+                      </Button>
+                    </Box>
+                  </>
+                )}
               </Box>
             </Grid>
             {/* <Grid item lg={4} md={4} xs={12}>
@@ -171,7 +215,7 @@ export default function MyProfile() {
         </CardContent> */}
       </Card>
       <Box style={{ marginTop: "20px" }}>
-        {showEdit ? <EditProfile /> : null}
+        {showEdit ? <EditProfile candidateData={candidateData} /> : null}
       </Box>
     </Fragment>
   );

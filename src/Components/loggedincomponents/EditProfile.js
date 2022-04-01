@@ -29,6 +29,7 @@ import LoadingScreen from "../../common/LoadingScreen";
 import PublishIcon from "@material-ui/icons/Publish";
 import moment from "moment";
 import { SnackbarContext } from "../../Context/SnackbarContext";
+import { db } from "../../firebase/Firebase";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -88,23 +89,20 @@ const skills = [
   "Skill 6",
 ];
 
-export default function EditProfile() {
+export default function EditProfile({ candidateData }) {
   const classes = useStyles();
+  const candidateDetails = candidateData?.candidateDetails;
   const { callSnackbar } = useContext(SnackbarContext);
   const [loading, setLoading] = useState(false);
   const [resumeFile, setResumeFile] = useState("");
   const [aadharCard, setAadharCard] = useState("");
   const [photo, setPhoto] = useState("");
   const [panCard, setPanCard] = useState("");
-  const [coreSkills, setCoreSkills] = useState([]);
-  const [spocDetails, setSpocDetails] = useState([]);
   const [exist, setExist] = useState(false);
-  const [fieldMissing, setFieldMissing] = useState(false);
-  const [firebaseError, setFirebaseError] = useState(false);
-  const [handleSuccess, setHandleSuccess] = useState(false);
   const [startDate, setStartDate] = useState(moment().format("YYYY-MM-DD "));
   const [endDate, setEndDate] = useState(moment().format("YYYY-MM-DD "));
 
+  console.log(candidateDetails);
   //form values
   const [formData, setFormData] = useState({
     fullName: "",
@@ -128,6 +126,32 @@ export default function EditProfile() {
     experienceDetails: "",
     linkedInUrl: "",
   });
+
+  useEffect(() => {
+    setFormData({
+      fullName: candidateDetails?.basicDetails.fullName,
+      collegeName: candidateDetails?.basicDetails.collegeName,
+      email: candidateDetails?.basicDetails.email,
+      phoneNumber: candidateDetails?.basicDetails.phoneNumber,
+      location: candidateDetails?.basicDetails.location,
+      qualification: candidateDetails?.basicDetails.qualification,
+      parentName: candidateDetails?.basicDetails.parentName,
+      altContactPersonName: candidateDetails?.basicDetails.altContactPersonName,
+      altContactPersonNo: candidateDetails?.basicDetails.altContactPersonNo,
+      experienceDetails: candidateDetails?.basicDetails.experienceDetails,
+      domain: candidateDetails?.internshipDetails.domain,
+      designation: candidateDetails?.internshipDetails.designation,
+      internshipPeriod: candidateDetails?.internshipDetails.internshipPeriod,
+      workMode: candidateDetails?.internshipDetails.workMode,
+      bankName: candidateDetails?.bankDetails.bankName,
+      accHolderName: candidateDetails?.bankDetails.accHolderName,
+      accNumber: candidateDetails?.bankDetails.accNumber,
+      branchName: candidateDetails?.bankDetails.branchName,
+      isfcCode: candidateDetails?.bankDetails.isfcCode,
+      linkedInUrl: candidateDetails?.attachments.linkedInUrl,
+    });
+  }, [candidateDetails]);
+
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -184,16 +208,7 @@ export default function EditProfile() {
     setPhoto(e.target.files[0]);
   };
 
-  //Core Skills Array
-  const handleChange = (event) => {
-    setCoreSkills(event.target.value);
-  };
-
   const data = {
-    resumeUrl: resumeFile.name,
-    gstUrl: photo.name,
-    panCardUrl: panCard.name,
-    aadharCardUrl: aadharCard.name,
     basicDetails: {
       fullName,
       collegeName,
@@ -206,13 +221,14 @@ export default function EditProfile() {
       altContactPersonNo,
       experienceDetails,
     },
-    domain,
-    designation,
-    internshipPeriod,
-    startDate,
-    endDate,
-    workMode,
-    coreSkills,
+    internshipDetails: {
+      domain,
+      designation,
+      internshipPeriod,
+      startDate,
+      endDate,
+      workMode,
+    },
     bankDetails: {
       bankName: bankName,
       accHolderName: accHolderName,
@@ -220,14 +236,13 @@ export default function EditProfile() {
       branchName: branchName,
       ISFC: isfcCode,
     },
-    linkedInUrl,
-    spocs: spocDetails,
-    rating: 0,
-    totalCandidatesHired: 0,
-    totalClosures: 0,
-    activeFrom: new Date(),
-    uid: "",
-    requirementAssigned: [],
+    attachments: {
+      resumeUrl: resumeFile.name,
+      gstUrl: photo.name,
+      panCardUrl: panCard.name,
+      aadharCardUrl: aadharCard.name,
+      linkedInUrl,
+    },
   };
 
   // console.log(data);
@@ -237,8 +252,6 @@ export default function EditProfile() {
     setPhoto([]);
     setPanCard([]);
     setAadharCard([]);
-    setSpocDetails([]);
-    setCoreSkills([]);
   };
 
   const setHandleAllReset = () => {
@@ -271,9 +284,6 @@ export default function EditProfile() {
     if (reason === "clickaway") {
       return;
     }
-    setFieldMissing(false);
-    setHandleSuccess(false);
-    setFirebaseError(false);
   };
 
   const handleAddVendor = async () => {
@@ -318,14 +328,19 @@ export default function EditProfile() {
         resumeFile.length === 0 ||
         aadharCard.length === 0
       ) {
-        callSnackbar(true, "Please Upload NDA Document", "error");
+        callSnackbar(true, "Please Upload All Documents", "error");
       } else {
         setLoading(true);
         try {
-          setHandleSuccess(true);
+          db.collection(`SelectedCandidates`)
+            .doc("iILElFjEsRQuVRT6OMM3")
+            .update({
+              candidateDetails: data,
+            });
+          callSnackbar(true, "Details saved successfully", "success");
           setHandleAllReset();
         } catch (err) {
-          setFirebaseError(true);
+          callSnackbar(true, "Some error occured, please try again", "error");
           setHandleAllReset();
           console.log(err.message);
         }
@@ -1097,33 +1112,6 @@ export default function EditProfile() {
           </Grid>
         </DialogContent>
       </Dialog>
-      <Snackbar
-        open={fieldMissing}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="error">
-          Please fill all the details!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={handleSuccess}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="success">
-          Vendor Added successfull!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={firebaseError}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="error">
-          Something went wrong, please try again!
-        </Alert>
-      </Snackbar>
     </Fragment>
   );
 }
