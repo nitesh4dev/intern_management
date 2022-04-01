@@ -142,7 +142,10 @@ export default function Login() {
               color="primary"
               fullWidth
               type="submit"
-              onClick={() => handleLogin()}
+              onClick={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
             >
               Login
             </Button>

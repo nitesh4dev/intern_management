@@ -10,20 +10,6 @@ export default function DataProvide({ children }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [expected, setExpected] = useState(10);
-  const expectedFunc = (e) => {
-    setExpected(e);
-  };
-
-  let colours = [
-    "#FA2609",
-    "#444444",
-    "#868686",
-    "#EDEDED",
-    "#FFA000",
-    "#57fc3a",
-    "#d40416",
-  ];
   useEffect(() => {
     db.collection("ClientID")
       .get()
@@ -33,14 +19,11 @@ export default function DataProvide({ children }) {
   return (
     <DataContext.Provider
       value={{
-        expected,
-        expectedFunc,
         open,
         handleOpen,
         handleClose,
         title,
         setTitle,
-        colours,
       }}
     >
       {children}

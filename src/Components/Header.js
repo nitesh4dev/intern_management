@@ -1,8 +1,7 @@
-import React, { useState, useContext, Fragment } from "react";
+import React, { useContext, Fragment } from "react";
 import clsx from "clsx";
 import resoluteaiLogo from "../assets/images/resoluteai-logo.png";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { db } from "../firebase/Firebase";
+import { Link, useHistory } from "react-router-dom";
 import {
   Menu,
   ExitToApp,
@@ -29,11 +28,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Slide,
-  Dialog,
-  DialogContent,
-  Grid,
-  Button,
   Box,
 } from "@material-ui/core";
 import ClientProfile from "./subheader/ClientProfile";
@@ -126,11 +120,6 @@ const StyledListItem = withStyles({
   },
 })(ListItem);
 
-//Modal transition
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 export default function Header() {
   const classes = useStyles();
   let history = useHistory();
@@ -138,15 +127,8 @@ export default function Header() {
   const { title, setTitle } = useContext(DataContext);
   const { user } = useContext(AuthContext);
 
-  const management = localStorage.getItem("management");
   //Initial component state
   const [open, setOpen] = React.useState(true);
-
-  //Modal state
-  const [modelOpen, setModelOpen] = useState(false);
-  const modalClose = () => {
-    setModelOpen(false);
-  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -292,7 +274,7 @@ export default function Header() {
           </IconButton>
           {user !== null ? (
             <Typography variant="h3" style={{ flexGrow: "1" }}>
-              Welcome {user.userData.GeneralDetails.internName}
+              Welcome {user?.userData?.GeneralDetails?.internName}
             </Typography>
           ) : (
             <Typography variant="h3" style={{ flexGrow: "1" }}></Typography>

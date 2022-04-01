@@ -3,20 +3,10 @@ import ResoluteAILogo from "../assets/images/resoluteai-logo.png";
 import SuperUserBg from "../assets/images/SuperuserBg.jpg";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { Link, useHistory } from "react-router-dom";
-import {
-  Grid,
-  Hidden,
-  Typography,
-  makeStyles,
-  Box,
-  Button,
-  Snackbar,
-} from "@material-ui/core";
-import { ArrowBack } from "@material-ui/icons";
-import { Alert } from "@material-ui/lab";
+import { Grid, Typography, makeStyles, Box, Button } from "@material-ui/core";
 import { AuthContext } from "../Context/AuthContext";
 import { SnackbarContext } from "../Context/SnackbarContext";
-
+import { db } from "../firebase/Firebase";
 //Custom styling
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,31 +38,39 @@ export default function SelectedSignup() {
   const classes = useStyles();
   const history = useHistory();
 
-  const { user, login } = useContext(AuthContext);
+  const { user, selectedCandidateSignup } = useContext(AuthContext);
   const { callSnackbar } = useContext(SnackbarContext);
   //Form state
   const [formData, setFormdata] = useState({
-    email: "",
+    resoluteEmail: "",
+    personalEmail: "",
     password: "",
     name: "",
     confirmPassword: "",
   });
 
+  // On Input Change
   const onChange = (e) =>
     setFormdata({ ...formData, [e.target.name]: e.target.value });
-  const { email, password, name, confirmPassword } = formData;
+  const { personalEmail, resoluteEmail, password, name, confirmPassword } =
+    formData;
 
-  //LOGIN CLIENT
-  const handleLogin = () => {
+  //Sign Up Selected Interns
+  const handleSignup = () => {
     // If both email and password fields are present
-    if (!email || !password || !name || !confirmPassword) {
+    if (
+      !personalEmail ||
+      !password ||
+      !name ||
+      !confirmPassword ||
+      !resoluteEmail
+    ) {
       console.log("Fill all the details");
-      callSnackbar(true, "Please fill both the fields", "warning");
+      callSnackbar(true, "Please fill all the fields", "warning");
       return;
     }
-
     // Check if the email matches the format we need
-    let splittedEmail = email.split(".");
+    let splittedEmail = resoluteEmail.split(".");
     if (splittedEmail[1] !== "resoluteai@gmail") {
       callSnackbar(
         true,
@@ -82,6 +80,17 @@ export default function SelectedSignup() {
       return;
     }
 
+    // Password length check
+    if (password.length < 8) {
+      callSnackbar(
+        true,
+        "The password should be atleast 8 characters long",
+        "warning"
+      );
+      return;
+    }
+
+    // Password matching with confirmPassword Check
     if (password !== confirmPassword) {
       callSnackbar(
         true,
@@ -90,7 +99,9 @@ export default function SelectedSignup() {
       );
       return;
     }
-    // login(email, password);
+
+    // Sign UP
+    selectedCandidateSignup(resoluteEmail, personalEmail, password);
   };
   return (
     <Grid container component="main" className={classes.root}>
@@ -122,12 +133,23 @@ export default function SelectedSignup() {
               validators={["required"]}
             />
             <TextValidator
-              label="Email Address"
+              label="Personal Email"
               className={classes.textFields}
               fullWidth
               variant="outlined"
-              name="email"
-              value={email}
+              name="personalEmail"
+              value={personalEmail}
+              onChange={(e) => onChange(e)}
+              validators={["required", "isEmail"]}
+              errorMessages={["This field is required", "Not a valid email ID"]}
+            />
+            <TextValidator
+              label="Resolute Email"
+              className={classes.textFields}
+              fullWidth
+              variant="outlined"
+              name="resoluteEmail"
+              value={resoluteEmail}
               onChange={(e) => onChange(e)}
               validators={["required", "isEmail"]}
               errorMessages={["This field is required", "Not a valid email ID"]}
@@ -161,7 +183,10 @@ export default function SelectedSignup() {
               color="primary"
               fullWidth
               type="submit"
-              onClick={() => handleLogin()}
+              onClick={(e) => {
+                e.preventDefault();
+                handleSignup();
+              }}
             >
               Sign Up
             </Button>
