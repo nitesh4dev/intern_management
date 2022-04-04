@@ -67,7 +67,6 @@ export default function MyProfile() {
   const [showEdit, setShowEdit] = useState(false);
   const [candidateData, setCandidateData] = useState({});
   const [profileStatus, setProfileStatus] = useState(false);
-  console.log(user);
 
   useEffect(() => {
     if (!user) return;
@@ -76,7 +75,6 @@ export default function MyProfile() {
       .get()
       .then((res) => {
         setProfileStatus(res.data().candidateDetails.profileComplete);
-        console.log(res.data().candidateDetails.profileComplete);
       })
       .catch((err) => {
         console.log(err);
@@ -84,18 +82,19 @@ export default function MyProfile() {
   }, []);
 
   const showEditFunc = () => {
+    console.log("hi");
     db.collection(`SelectedCandidates`)
       .doc(user.userDocId)
       .get()
       .then((res) => {
         setCandidateData(res.data());
+        console.log(res.data());
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  console.log(profileStatus);
   return (
     <Fragment>
       <Card>
@@ -119,7 +118,12 @@ export default function MyProfile() {
                 <Typography variant="h2" className={classes.typoMargin}>
                   Ashish H
                   <Tooltip title={`Edit Profile`}>
-                    <IconButton onClick={() => setShowEdit(!showEdit)}>
+                    <IconButton
+                      onClick={() => {
+                        showEditFunc();
+                        setShowEdit(!showEdit);
+                      }}
+                    >
                       <EditIcon />
                     </IconButton>
                   </Tooltip>

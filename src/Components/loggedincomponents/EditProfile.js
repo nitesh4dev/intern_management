@@ -237,7 +237,7 @@ export default function EditProfile({ candidateData }) {
       accHolderName: accHolderName,
       accNumber: accNumber,
       branchName: branchName,
-      ISFC: isfcCode,
+      isfcCode: isfcCode,
     },
     attachments: {
       resumeUrl: resumeFile.name,
