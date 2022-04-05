@@ -1,4 +1,4 @@
-import React, { useContext, Fragment } from "react";
+import React, { useContext, Fragment, useState, useEffect } from "react";
 import clsx from "clsx";
 import resoluteaiLogo from "../assets/images/resoluteai-logo.png";
 import { Link, useHistory } from "react-router-dom";
@@ -126,7 +126,7 @@ export default function Header() {
   const theme = useTheme();
   const { title, setTitle } = useContext(DataContext);
   const { user } = useContext(AuthContext);
-
+  const [loggedInListItem, setLoggedInListItem] = useState([]);
   //Initial component state
   const [open, setOpen] = React.useState(true);
 
@@ -173,83 +173,151 @@ export default function Header() {
       },
     },
   ];
+  useEffect(() => {
+    if (!user) return;
+    if (user.userType === "selected-intern")
+      setLoggedInListItem([
+        {
+          text: "Home",
+          icon: <Home color={title === "Home" ? "primary" : "default"} />,
+          onClick: () => {
+            setTitle("Home");
+            history.push("/loggedin/home");
+          },
+        },
+        {
+          text: "My Profile",
+          icon: (
+            <Person color={title === "My Profile" ? "primary" : "default"} />
+          ),
+          onClick: () => {
+            setTitle("My Profile");
+            history.push("/loggedin/myprofile");
+          },
+        },
+        {
+          text: "Documents",
+          icon: (
+            <FileCopy color={title === "Documents" ? "primary" : "default"} />
+          ),
+          onClick: () => {
+            setTitle("Documents");
+            history.push("/loggedin/documents");
+          },
+        },
+        {
+          text: "Openings",
+          icon: (
+            <BookIcon color={title === "Openings" ? "primary" : "default"} />
+          ),
+          onClick: () => {
+            setTitle("Openings");
+            history.push("/loggedin/openings");
+          },
+        },
 
-  const loggedInListItem = [
-    {
-      text: "Home",
-      icon: <Home color={title === "Home" ? "primary" : "default"} />,
-      onClick: () => {
-        setTitle("Home");
-        history.push("/loggedin/home");
-      },
-    },
-    {
-      text: "My Profile",
-      icon: <Person color={title === "My Profile" ? "primary" : "default"} />,
-      onClick: () => {
-        setTitle("My Profile");
-        history.push("/loggedin/myprofile");
-      },
-    },
-    {
-      text: "Documents",
-      icon: <FileCopy color={title === "Documents" ? "primary" : "default"} />,
-      onClick: () => {
-        setTitle("Documents");
-        history.push("/loggedin/documents");
-      },
-    },
-    {
-      text: "Openings",
-      icon: <BookIcon color={title === "Openings" ? "primary" : "default"} />,
-      onClick: () => {
-        setTitle("Openings");
-        history.push("/loggedin/openings");
-      },
-    },
+        {
+          text: "Your Applications",
+          icon: (
+            <ConfirmationNumberIcon
+              color={title === "Your Applications" ? "primary" : "default"}
+            />
+          ),
+          onClick: () => {
+            setTitle("Your Applications");
+            history.push("/loggedin/applications");
+          },
+        },
+        {
+          text: "Your Assignments",
+          icon: (
+            <AssignmentIcon
+              color={title === "Your Assignments" ? "primary" : "default"}
+            />
+          ),
+          onClick: () => {
+            setTitle("Your Assignments");
+            history.push("/loggedin/assignments");
+          },
+        },
+        {
+          text: "Exit Form",
+          icon: (
+            <ExitToApp color={title === "Exit Form" ? "primary" : "default"} />
+          ),
+          onClick: () => {
+            setTitle("Exit Form");
+            history.push("/loggedin/exit-form");
+          },
+        },
+        {
+          text: "Gallery",
+          icon: (
+            <ImageIcon color={title === "Gallery" ? "primary" : "default"} />
+          ),
+          onClick: () => {
+            setTitle("Gallery");
+            history.push("/loggedin/gallery");
+          },
+        },
+      ]);
+    else if (user.userType === "new-intern")
+      setLoggedInListItem([
+        {
+          text: "Home",
+          icon: <Home color={title === "Home" ? "primary" : "default"} />,
+          onClick: () => {
+            setTitle("Home");
+            history.push("/loggedin/home");
+          },
+        },
+        {
+          text: "Openings",
+          icon: (
+            <BookIcon color={title === "Openings" ? "primary" : "default"} />
+          ),
+          onClick: () => {
+            setTitle("Openings");
+            history.push("/loggedin/openings");
+          },
+        },
 
-    {
-      text: "Your Applications",
-      icon: (
-        <ConfirmationNumberIcon
-          color={title === "Your Applications" ? "primary" : "default"}
-        />
-      ),
-      onClick: () => {
-        setTitle("Your Applications");
-        history.push("/loggedin/applications");
-      },
-    },
-    {
-      text: "Your Assignments",
-      icon: (
-        <AssignmentIcon
-          color={title === "Your Assignments" ? "primary" : "default"}
-        />
-      ),
-      onClick: () => {
-        setTitle("Your Assignments");
-        history.push("/loggedin/assignments");
-      },
-    },
-    {
-      text: "Exit Form",
-      icon: <ExitToApp color={title === "Exit Form" ? "primary" : "default"} />,
-      onClick: () => {
-        setTitle("Exit Form");
-        history.push("/loggedin/exit-form");
-      },
-    },
-    {
-      text: "Gallery",
-      icon: <ImageIcon color={title === "Gallery" ? "primary" : "default"} />,
-      onClick: () => {
-        setTitle("Gallery");
-        history.push("/loggedin/gallery");
-      },
-    },
-  ];
-
+        {
+          text: "Your Applications",
+          icon: (
+            <ConfirmationNumberIcon
+              color={title === "Your Applications" ? "primary" : "default"}
+            />
+          ),
+          onClick: () => {
+            setTitle("Your Applications");
+            history.push("/loggedin/applications");
+          },
+        },
+        {
+          text: "Your Assignments",
+          icon: (
+            <AssignmentIcon
+              color={title === "Your Assignments" ? "primary" : "default"}
+            />
+          ),
+          onClick: () => {
+            setTitle("Your Assignments");
+            history.push("/loggedin/assignments");
+          },
+        },
+        {
+          text: "Gallery",
+          icon: (
+            <ImageIcon color={title === "Gallery" ? "primary" : "default"} />
+          ),
+          onClick: () => {
+            setTitle("Gallery");
+            history.push("/loggedin/gallery");
+          },
+        },
+      ]);
+  }, [user]);
   return (
     <div className={classes.root}>
       <CssBaseline />

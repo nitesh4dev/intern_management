@@ -68,31 +68,36 @@ export default function MyProfile() {
   const [candidateData, setCandidateData] = useState({});
   const [profileStatus, setProfileStatus] = useState(false);
 
+  // Get the data from
   useEffect(() => {
     if (!user) return;
-    db.collection(`SelectedCandidates`)
-      .doc(user.userDocId)
-      .get()
-      .then((res) => {
-        setProfileStatus(res.data().candidateDetails.profileComplete);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    console.log(user);
+    setProfileStatus(user.userData.candidateDetails.profileComplete);
+    // db.collection(`SelectedCandidates`)
+    //   .doc(user.userDocId)
+    //   .get()
+    //   .then((res) => {
+    //     setProfileStatus(res.data().candidateDetails.profileComplete);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   }, []);
 
   const showEditFunc = () => {
-    console.log("hi");
-    db.collection(`SelectedCandidates`)
-      .doc(user.userDocId)
-      .get()
-      .then((res) => {
-        setCandidateData(res.data());
-        console.log(res.data());
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    console.log("triggered edit function");
+    if (!user) return;
+    setCandidateData(user.userData);
+    // db.collection(`SelectedCandidates`)
+    //   .doc(user.userDocId)
+    //   .get()
+    //   .then((res) => {
+    //     setCandidateData(res.data());
+    //     console.log(res.data());
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   return (
@@ -223,7 +228,12 @@ export default function MyProfile() {
         </CardContent> */}
       </Card>
       <Box style={{ marginTop: "20px" }}>
-        {showEdit ? <EditProfile candidateData={candidateData} /> : null}
+        {showEdit ? (
+          <EditProfile
+            candidateData={candidateData}
+            profileStatus={profileStatus}
+          />
+        ) : null}
       </Box>
     </Fragment>
   );

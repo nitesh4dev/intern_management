@@ -25,6 +25,7 @@ export default function AuthProvider({ children }) {
               res.docs.forEach((doc) => {
                 newId = doc.id;
                 setUser({
+                  userType: "new-intern",
                   userDocId: newId,
                   userData: doc.data(),
                 });
@@ -46,6 +47,7 @@ export default function AuthProvider({ children }) {
 
             res.docs.forEach((doc) => {
               setUser({
+                userType: "selected-intern",
                 userDocId: doc.id,
                 userData: doc.data(),
               });
@@ -82,6 +84,7 @@ export default function AuthProvider({ children }) {
     auth
       .signInWithEmailAndPassword(email, password)
       .then((res) => {
+        console.log("Login successful");
         setIsLoading(false);
       })
       .catch((err) => {
@@ -124,6 +127,7 @@ export default function AuthProvider({ children }) {
             });
             setIsLoading(false);
             setIsAuthenticated(true);
+            callSnackbar(true, "Account successfully created", "success");
           })
           .catch((err) => {
             if (

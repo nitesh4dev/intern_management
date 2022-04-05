@@ -55,6 +55,15 @@ export default function SelectedSignup() {
   const { personalEmail, resoluteEmail, password, name, confirmPassword } =
     formData;
 
+  const resetForm = () => {
+    setFormdata({
+      resoluteEmail: "",
+      personalEmail: "",
+      password: "",
+      name: "",
+      confirmPassword: "",
+    });
+  };
   //Sign Up Selected Interns
   const handleSignup = () => {
     // If both email and password fields are present
@@ -102,6 +111,7 @@ export default function SelectedSignup() {
 
     // Sign UP
     selectedCandidateSignup(resoluteEmail, personalEmail, password);
+    resetForm();
   };
   return (
     <Grid container component="main" className={classes.root}>

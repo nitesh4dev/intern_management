@@ -29,7 +29,7 @@ import LoadingScreen from "../../common/LoadingScreen";
 import PublishIcon from "@material-ui/icons/Publish";
 import moment from "moment";
 import { SnackbarContext } from "../../Context/SnackbarContext";
-import { db } from "../../firebase/Firebase";
+import { db, storage } from "../../firebase/Firebase";
 import { AuthContext } from "../../Context/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
@@ -90,7 +90,7 @@ const skills = [
   "Skill 6",
 ];
 
-export default function EditProfile({ candidateData }) {
+export default function EditProfile({ candidateData, profileStatus }) {
   const classes = useStyles();
   const { user } = useContext(AuthContext);
   const candidateDetails = candidateData?.candidateDetails;
@@ -100,7 +100,6 @@ export default function EditProfile({ candidateData }) {
   const [aadharCard, setAadharCard] = useState("");
   const [photo, setPhoto] = useState("");
   const [panCard, setPanCard] = useState("");
-  const [exist, setExist] = useState(false);
   const [startDate, setStartDate] = useState(moment().format("YYYY-MM-DD "));
   const [endDate, setEndDate] = useState(moment().format("YYYY-MM-DD "));
 
@@ -211,45 +210,6 @@ export default function EditProfile({ candidateData }) {
     setPhoto(e.target.files[0]);
   };
 
-  const data = {
-    basicDetails: {
-      fullName,
-      collegeName,
-      email,
-      phoneNumber,
-      location,
-      qualification,
-      parentName,
-      altContactPersonName,
-      altContactPersonNo,
-      experienceDetails,
-    },
-    internshipDetails: {
-      domain,
-      designation,
-      internshipPeriod,
-      startDate,
-      endDate,
-      workMode,
-    },
-    bankDetails: {
-      bankName: bankName,
-      accHolderName: accHolderName,
-      accNumber: accNumber,
-      branchName: branchName,
-      isfcCode: isfcCode,
-    },
-    attachments: {
-      resumeUrl: resumeFile.name,
-      gstUrl: photo.name,
-      panCardUrl: panCard.name,
-      aadharCardUrl: aadharCard.name,
-      linkedInUrl,
-    },
-  };
-
-  // console.log(data);
-
   const resetDocs = () => {
     setResumeFile([]);
     setPhoto([]);
@@ -282,75 +242,123 @@ export default function EditProfile({ candidateData }) {
     });
     resetDocs();
   };
-  //snakbar close
-  const handleClose = (reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-  };
 
-  const handleAddVendor = async () => {
-    // e.preventDefault();
-    if (exist) {
-      // modalClose(true);
-      alert("email exist");
-      callSnackbar(
-        true,
-        "This email is already registered, check Employee Profiles",
-        "error"
-      );
+  const handleEditProfile = async () => {
+    const data = {
+      basicDetails: {
+        fullName,
+        collegeName,
+        email,
+        phoneNumber,
+        location,
+        qualification,
+        parentName,
+        altContactPersonName,
+        altContactPersonNo,
+        experienceDetails,
+      },
+      internshipDetails: {
+        domain,
+        designation,
+        internshipPeriod,
+        startDate,
+        endDate,
+        workMode,
+      },
+      bankDetails: {
+        bankName: bankName,
+        accHolderName: accHolderName,
+        accNumber: accNumber,
+        branchName: branchName,
+        isfcCode: isfcCode,
+      },
+    };
+
+    if (
+      !fullName ||
+      !collegeName ||
+      !email ||
+      !phoneNumber ||
+      !location ||
+      !qualification ||
+      !parentName ||
+      !altContactPersonName ||
+      !altContactPersonNo ||
+      !experienceDetails ||
+      !domain ||
+      !designation ||
+      !internshipPeriod ||
+      !startDate ||
+      !endDate ||
+      !workMode ||
+      !bankName ||
+      !accHolderName ||
+      !accNumber ||
+      !branchName ||
+      !isfcCode ||
+      !linkedInUrl
+    ) {
+      callSnackbar(true, "Please ensure to fill all the details", "error");
+    } else if (
+      panCard.length === 0 ||
+      photo.length === 0 ||
+      resumeFile.length === 0 ||
+      aadharCard.length === 0
+    ) {
+      callSnackbar(true, "Please Upload All Documents", "error");
     } else {
-      // alert("Doesn't exist");
-      if (
-        !fullName ||
-        !collegeName ||
-        !email ||
-        !phoneNumber ||
-        !location ||
-        !qualification ||
-        !parentName ||
-        !altContactPersonName ||
-        !altContactPersonNo ||
-        !experienceDetails ||
-        !domain ||
-        !designation ||
-        !internshipPeriod ||
-        !startDate ||
-        !endDate ||
-        !workMode ||
-        !bankName ||
-        !accHolderName ||
-        !accNumber ||
-        !branchName ||
-        !isfcCode ||
-        !linkedInUrl
-      ) {
-        callSnackbar(true, "Please ensure to fill all the details", "error");
-      } else if (
-        panCard.length === 0 ||
-        photo.length === 0 ||
-        resumeFile.length === 0 ||
-        aadharCard.length === 0
-      ) {
-        callSnackbar(true, "Please Upload All Documents", "error");
-      } else {
-        setLoading(true);
-        try {
-          if (!user) return;
-          db.collection(`SelectedCandidates`)
-            .doc(user.userDocId)
-            .update({
-              candidateDetails: { ...data, profileComplete: true },
-            });
-          callSnackbar(true, "Details saved successfully", "success");
-          setHandleAllReset();
-        } catch (err) {
-          callSnackbar(true, "Some error occured, please try again", "error");
-          setHandleAllReset();
-          console.log(err.message);
-        }
-        setLoading(false);
+      setLoading(true);
+
+      try {
+        if (!user) return;
+        const docRef = db.collection(`SelectedCandidates`).doc(user.userDocId);
+        docRef.update({
+          candidateDetails: { ...data, profileComplete: true },
+        });
+
+        // Upload all the files and save their Urls
+        const resumeRef = storage.child(
+          `SelectedInterns/${user.userDocId}/${resumeFile.name}`
+        );
+        const panCardRef = storage.child(
+          `SelectedInterns/${user.userDocId}/${panCard.name}`
+        );
+        const aadharCardRef = storage.child(
+          `SelectedInterns/${user.userDocId}/${aadharCard.name}`
+        );
+        const photoRef = storage.child(
+          `SelectedInterns/${user.userDocId}/${photo.name}`
+        );
+
+        resumeRef
+          .put(resumeFile)
+          .then((snapshot) => panCardRef.put(panCard))
+          .then((snapshot) => aadharCardRef.put(aadharCard))
+          .then((snapshot) => photoRef.put(photo))
+          .catch((err) => console.log(err));
+
+        const resumeUrl = await resumeRef.getDownloadURL();
+        const aadharCardUrl = await aadharCardRef.getDownloadURL();
+        const panCardUrl = await panCardRef.getDownloadURL();
+        const photoUrl = await photoRef.getDownloadURL();
+
+        docRef.update({
+          "candidateDetails.attachments": {
+            aadharCardUrl,
+            photoUrl,
+            resumeUrl,
+            panCardUrl,
+            linkedInUrl,
+          },
+        });
+        callSnackbar(true, "Details saved successfully", "success");
+        setHandleAllReset();
+      } catch (err) {
+        callSnackbar(true, "Some error occured, please try again", "error");
+        setHandleAllReset();
+        console.log(err.message);
       }
+      setLoading(false);
     }
   };
   if (loading) return <LoadingScreen />;
@@ -599,31 +607,6 @@ export default function EditProfile({ candidateData }) {
                       onChange(e);
                     }}
                   />
-                  {/* <FormControl
-                    className={classes.formControl}
-                    variant="outlined"
-                  >
-                    <InputLabel id="core-skills">Core Skills</InputLabel>
-                    <Select
-                      labelId="core-skills"
-                      id="core-skills-mutiple-checkbox"
-                      multiple
-                      fullWidth
-                      variant="outlined"
-                      value={coreSkills}
-                      onChange={handleChange}
-                      input={<OutlinedInput label="Core Skills" />}
-                      renderValue={(selected) => selected.join(", ")}
-                      MenuProps={MenuProps}
-                    >
-                      {skills.map((name) => (
-                        <MenuItem key={name} value={name}>
-                          <Checkbox checked={coreSkills.indexOf(name) > -1} />
-                          <ListItemText primary={name} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl> */}
                 </Box>
                 <Box width="32%">
                   <SelectValidator
@@ -816,245 +799,116 @@ export default function EditProfile({ candidateData }) {
                 </Box>
               </Box>
             </Paper>
-
-            {/* <Paper
-              style={{
-                padding: "20px 40px 20px 40px",
-                margin: "20px 0 20px 0",
-                borderRadius: "3",
-              }}
-              elevation={3}
-            >
-              <Typography variant="h2" className={classes.mb3}>
-                Add Primary Contact Details
-              </Typography>
-              <Box display="flex" justifyContent="space-between">
-                <Box width="48%">
-                  <TextValidator
-                    fullWidth
-                    variant="outlined"
-                    label="Full Name *"
-                    validators={["required"]}
-                    errorMessages={["This field is required"]}
-                    name="spoc1Name"
-                    value={spoc1Name}
-                    className={classes.mb3}
-                    onChange={(e) => {
-                      onChange(e);
-                    }}
-                  />
-                </Box>
-
-                <Box width="48%">
-                  <TextValidator
-                    placeholder="Phone Number *"
-                    label="Phone Number *"
-                    className={classes.mb3}
-                    fullWidth
-                    variant="outlined"
-                    name="spoc1Phone"
-                    value={spoc1Phone}
-                    onChange={(e) => onChange(e)}
-                    validators={["required", "isEmail"]}
-                    errorMessages={[
-                      "This field is required",
-                      "Not a valid email ID",
-                    ]}
-                  />
-                </Box>
-              </Box>
-              <Box width="100%">
-                <TextValidator
-                  placeholder="Email Address *"
-                  label="Email Address *"
-                  className={classes.mb3}
-                  fullWidth
-                  variant="outlined"
-                  name="spoc1Email"
-                  value={spoc1Email}
-                  onChange={(e) => onChange(e)}
-                  validators={["required", "isEmail"]}
-                  errorMessages={[
-                    "This field is required",
-                    "Not a valid email ID",
-                  ]}
-                />
-              </Box>
-            </Paper> */}
-
-            {/* <Paper
-              style={{
-                padding: "20px 40px 20px 40px",
-                margin: "20px 0 20px 0",
-                borderRadius: "3",
-              }}
-              elevation={3}
-            >
-              <Typography variant="h2" className={classes.mb3}>
-                Add Secondary Contact Details
-              </Typography>
-              <Box display="flex" justifyContent="space-between">
-                <Box width="48%">
-                  <TextValidator
-                    fullWidth
-                    variant="outlined"
-                    label="Full Name"
-                    validators={["required"]}
-                    errorMessages={["This field is required"]}
-                    name="spoc2Name"
-                    value={spoc2Name}
-                    className={classes.mb3}
-                    onChange={(e) => {
-                      onChange(e);
-                    }}
-                  />
-                </Box>
-
-                <Box width="48%">
-                  <TextValidator
-                    placeholder="Phone Number "
-                    label="Phone Number "
-                    className={classes.mb3}
-                    fullWidth
-                    variant="outlined"
-                    name="spoc2Phone"
-                    value={spoc2Phone}
-                    onChange={(e) => onChange(e)}
-                    validators={["required", "isEmail"]}
-                    errorMessages={[
-                      "This field is required",
-                      "Not a valid email ID",
-                    ]}
-                  />
-                </Box>
-              </Box>
-              <Box width="100%">
-                <TextValidator
-                  placeholder="Email Address "
-                  label="Email Address "
-                  className={classes.mb3}
-                  fullWidth
-                  variant="outlined"
-                  name="spoc2Email"
-                  value={spoc2Email}
-                  onChange={(e) => onChange(e)}
-                  validators={["required", "isEmail"]}
-                  errorMessages={[
-                    "This field is required",
-                    "Not a valid email ID",
-                  ]}
-                />
-              </Box>
-            </Paper> */}
-
-            <Paper
-              style={{
-                padding: "20px 40px 20px 40px",
-                margin: "20px 0 20px 0",
-                borderRadius: "3",
-              }}
-              elevation={3}
-            >
-              <Typography variant="h2" className={classes.mb3}>
-                Attachments
-              </Typography>
-              <Box width="100%">
-                <TextValidator
-                  fullWidth
-                  variant="outlined"
-                  label="LinkedIn Profile URL *"
-                  validators={["required"]}
-                  errorMessages={["This field is required"]}
-                  name="linkedInUrl"
-                  value={linkedInUrl}
-                  className={classes.mb3}
-                  onChange={(e) => {
-                    onChange(e);
-                  }}
-                />
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                className={classes.mb3}
+            {!profileStatus && (
+              <Paper
+                style={{
+                  padding: "20px 40px 20px 40px",
+                  margin: "20px 0 20px 0",
+                  borderRadius: "3",
+                }}
+                elevation={3}
               >
-                <Box width="48%">
-                  <Button
-                    color="primary"
-                    variant="contained"
+                <Typography variant="h2" className={classes.mb3}>
+                  Attachments
+                </Typography>
+                <Box width="100%">
+                  <TextValidator
                     fullWidth
-                    className="mT20"
-                    component="label"
-                    startIcon={<PublishIcon />}
-                  >
-                    Upload Resume
-                    <input
-                      type="file"
-                      hidden
-                      onChange={(e) => handleResumeUpload(e)}
-                    />
-                  </Button>
-                  <Typography>{resumeFile.name}</Typography>
+                    variant="outlined"
+                    label="LinkedIn Profile URL *"
+                    validators={["required"]}
+                    errorMessages={["This field is required"]}
+                    name="linkedInUrl"
+                    value={linkedInUrl}
+                    className={classes.mb3}
+                    onChange={(e) => {
+                      onChange(e);
+                    }}
+                  />
                 </Box>
-                <Box width="48%">
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    fullWidth
-                    className="mT20"
-                    component="label"
-                    startIcon={<PublishIcon />}
-                  >
-                    Upload Aadhar Card
-                    <input
-                      type="file"
-                      hidden
-                      onChange={(e) => handleAadharCardUpload(e)}
-                    />
-                  </Button>
-                  <Typography>{aadharCard.name}</Typography>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  className={classes.mb3}
+                >
+                  <Box width="48%">
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      fullWidth
+                      className="mT20"
+                      component="label"
+                      startIcon={<PublishIcon />}
+                    >
+                      Upload Resume
+                      <input
+                        type="file"
+                        hidden
+                        onChange={(e) => handleResumeUpload(e)}
+                      />
+                    </Button>
+                    <Typography>{resumeFile.name}</Typography>
+                  </Box>
+                  <Box width="48%">
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      fullWidth
+                      className="mT20"
+                      component="label"
+                      startIcon={<PublishIcon />}
+                    >
+                      Upload Aadhar Card
+                      <input
+                        type="file"
+                        hidden
+                        onChange={(e) => handleAadharCardUpload(e)}
+                      />
+                    </Button>
+                    <Typography>{aadharCard.name}</Typography>
+                  </Box>
                 </Box>
-              </Box>
 
-              <Box display="flex" justifyContent="space-between">
-                <Box width="48%">
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    fullWidth
-                    className="mT20"
-                    component="label"
-                    startIcon={<PublishIcon />}
-                  >
-                    Upload PAN Card
-                    <input
-                      type="file"
-                      hidden
-                      onChange={(e) => handlePanUpload(e)}
-                    />
-                  </Button>
-                  <Typography>{panCard.name}</Typography>
+                <Box display="flex" justifyContent="space-between">
+                  <Box width="48%">
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      fullWidth
+                      className="mT20"
+                      component="label"
+                      startIcon={<PublishIcon />}
+                    >
+                      Upload PAN Card
+                      <input
+                        type="file"
+                        hidden
+                        onChange={(e) => handlePanUpload(e)}
+                      />
+                    </Button>
+                    <Typography>{panCard.name}</Typography>
+                  </Box>
+                  <Box width="48%">
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      fullWidth
+                      className="mT20"
+                      component="label"
+                      startIcon={<PublishIcon />}
+                    >
+                      Upload Professional Photo
+                      <input
+                        type="file"
+                        hidden
+                        onChange={(e) => handlePhotoUpload(e)}
+                      />
+                    </Button>
+                    <Typography>{photo.name}</Typography>
+                  </Box>
                 </Box>
-                <Box width="48%">
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    fullWidth
-                    className="mT20"
-                    component="label"
-                    startIcon={<PublishIcon />}
-                  >
-                    Upload Professional Photo
-                    <input
-                      type="file"
-                      hidden
-                      onChange={(e) => handlePhotoUpload(e)}
-                    />
-                  </Button>
-                  <Typography>{photo.name}</Typography>
-                </Box>
-              </Box>
-            </Paper>
+              </Paper>
+            )}
 
             <Grid container spacing={4}>
               <Grid item lg={12}>
@@ -1065,8 +919,7 @@ export default function EditProfile({ candidateData }) {
                   fullWidth
                   className="mT20"
                   onClick={() => {
-                    // setModelOpen(true);
-                    handleAddVendor();
+                    handleEditProfile();
                   }}
                 >
                   Save Details
@@ -1109,7 +962,7 @@ export default function EditProfile({ candidateData }) {
                 size="small"
                 color="primary"
                 variant="contained"
-                onClick={handleAddVendor}
+                onClick={handleEditProfile}
               >
                 Ok
               </Button>
