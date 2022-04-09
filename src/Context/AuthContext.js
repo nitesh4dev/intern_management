@@ -86,6 +86,7 @@ export default function AuthProvider({ children }) {
       .then((res) => {
         console.log("Login successful");
         setIsLoading(false);
+        setIsAuthenticated(true);
       })
       .catch((err) => {
         console.log(err.message);
@@ -93,7 +94,12 @@ export default function AuthProvider({ children }) {
   };
 
   // Sign Up Function for selected applicants
-  const selectedCandidateSignup = (resoluteEmail, personalEmail, password) => {
+  const selectedCandidateSignup = (
+    resoluteEmail,
+    personalEmail,
+    password,
+    name
+  ) => {
     setIsLoading(true);
 
     //  Check if the Intern's personal email is inside the SelectedCandidates
@@ -123,6 +129,8 @@ export default function AuthProvider({ children }) {
           .then((userCredentials) => {
             selectedCandidateDocRef.update({
               "candidateDetails.profileComplete": false,
+              "candidateDetails.basicDetails.fullName": name,
+              "candidateDetails.basicDetails.resoluteEmail": resoluteEmail,
               userId: userCredentials.user.uid,
             });
             setIsLoading(false);

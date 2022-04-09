@@ -205,41 +205,41 @@ export default function Header() {
             history.push("/loggedin/documents");
           },
         },
-        {
-          text: "Openings",
-          icon: (
-            <BookIcon color={title === "Openings" ? "primary" : "default"} />
-          ),
-          onClick: () => {
-            setTitle("Openings");
-            history.push("/loggedin/openings");
-          },
-        },
+        // {
+        //   text: "Openings",
+        //   icon: (
+        //     <BookIcon color={title === "Openings" ? "primary" : "default"} />
+        //   ),
+        //   onClick: () => {
+        //     setTitle("Openings");
+        //     history.push("/loggedin/openings");
+        //   },
+        // },
 
-        {
-          text: "Your Applications",
-          icon: (
-            <ConfirmationNumberIcon
-              color={title === "Your Applications" ? "primary" : "default"}
-            />
-          ),
-          onClick: () => {
-            setTitle("Your Applications");
-            history.push("/loggedin/applications");
-          },
-        },
-        {
-          text: "Your Assignments",
-          icon: (
-            <AssignmentIcon
-              color={title === "Your Assignments" ? "primary" : "default"}
-            />
-          ),
-          onClick: () => {
-            setTitle("Your Assignments");
-            history.push("/loggedin/assignments");
-          },
-        },
+        // {
+        //   text: "Your Applications",
+        //   icon: (
+        //     <ConfirmationNumberIcon
+        //       color={title === "Your Applications" ? "primary" : "default"}
+        //     />
+        //   ),
+        //   onClick: () => {
+        //     setTitle("Your Applications");
+        //     history.push("/loggedin/applications");
+        //   },
+        // },
+        // {
+        //   text: "Your Assignments",
+        //   icon: (
+        //     <AssignmentIcon
+        //       color={title === "Your Assignments" ? "primary" : "default"}
+        //     />
+        //   ),
+        //   onClick: () => {
+        //     setTitle("Your Assignments");
+        //     history.push("/loggedin/assignments");
+        //   },
+        // },
         {
           text: "Exit Form",
           icon: (

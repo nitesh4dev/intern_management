@@ -20,6 +20,7 @@ import { AuthContext } from "../../Context/AuthContext";
 import { Alert } from "@material-ui/lab";
 import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import { SnackbarContext } from "../../Context/SnackbarContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,6 +81,7 @@ const style = {
 export default function Assigments() {
   const classes = useStyles();
   const { user } = useContext(AuthContext);
+  const { callSnackbar } = useContext(SnackbarContext);
 
   // For redirecting
   const history = useHistory();
@@ -101,7 +103,7 @@ export default function Assigments() {
   const [assignmentIds, setAssignmentIds] = useState(null);
   const [applyStatus, setApplyStatus] = useState([]);
 
-  useEffect(() => {
+useEffect(() => {
     let statusArr = [];
 
     // Here Find all the internships where this applicant has applied

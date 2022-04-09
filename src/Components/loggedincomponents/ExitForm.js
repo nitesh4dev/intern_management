@@ -26,6 +26,9 @@ import {
 import { useState } from "react";
 import { SnackbarContext } from "../../Context/SnackbarContext";
 import { useContext } from "react";
+import { db, storage } from "../../firebase/Firebase";
+import { AuthContext } from "../../Context/AuthContext";
+import { useEffect } from "react";
 const useStyles = makeStyles((theme) => ({
   topCard: {
     padding: theme.spacing(4),
@@ -46,6 +49,7 @@ const exitProcess = [
 ];
 const ExitForm = () => {
   const { callSnackbar } = useContext(SnackbarContext);
+  const { user } = useContext(AuthContext);
   const [testimonialVideoFile, setTestimonialVideoFile] = useState("");
   const [testimonialPhotoFile, setTestimonialPhotoFile] = useState("");
   const [formData, setFormData] = useState({
@@ -65,7 +69,6 @@ const ExitForm = () => {
     feedback: "",
   });
   const classes = useStyles();
-
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -97,9 +100,8 @@ const ExitForm = () => {
     setTestimonialPhotoFile("");
     setTestimonialVideoFile("");
   };
-  const handleExitFormSubmit = (e) => {
+  const handleExitFormSubmit = async (e) => {
     e.preventDefault();
-
     const {
       email,
       name,
@@ -125,24 +127,56 @@ const ExitForm = () => {
       !email ||
       !fatherName ||
       !name ||
-      !resoluteEmailId
+      !resoluteEmailId ||
+      !testimonialPhotoFile ||
+      !testimonialVideoFile
     ) {
       callSnackbar(true, "Fill all the required details", "error");
       return;
     }
 
-    // Create proper structure for the form submission
-    const data = {
-      ...formData,
-      testimonialPhotoFile,
-      testimonialVideoFile,
-    };
-
     // Submit the Exit Form [ data object ]
+    try {
+      if (!user) return;
+      callSnackbar(true, "Uploading form data and files", "success");
+      const docRef = db.collection("SelectedCandidates").doc(user.userDocId);
+      console.log(docRef);
+      // update the data.
+      docRef.update({
+        ExitForm: {
+          ...formData,
+        },
+      });
 
+      // upload the files to SelectedInterns/id/ExitForm/
+      const testimonialVideoRef = storage.child(
+        `SelectedInterns/${user.userDocId}/ExitForm/testimonialVideo/${testimonialVideoFile.name}`
+      );
+      const testimonialPhotoRef = storage.child(
+        `SelectedInterns/${user.userDocId}/ExitForm/testimonialPhoto/${testimonialPhotoFile.name}`
+      );
+
+      testimonialPhotoRef
+        .put(testimonialPhotoFile)
+        .then((snapshot) => testimonialVideoRef.put(testimonialVideoFile))
+        .then(async () => {
+          const testimonialVideoUrl =
+            await testimonialVideoRef.getDownloadURL();
+          const testimonialPhotoUrl =
+            await testimonialPhotoRef.getDownloadURL();
+          docRef.update({
+            "ExitForm.testimonialVideoUrl": testimonialVideoUrl,
+            "ExitForm.testimonialPhotoUrl": testimonialPhotoUrl,
+          });
+          callSnackbar(true, "Successfully submitted exit form", "success");
+        })
+        .catch((err) => console.log(err));
+    } catch (err) {
+      callSnackbar(true, "Some error occured, please try again", "error");
+      console.log(err);
+    }
     // Reset the forms
     resetExitForm();
-    callSnackbar(true, "Successfully submitted exit form", "success");
   };
   return (
     <>

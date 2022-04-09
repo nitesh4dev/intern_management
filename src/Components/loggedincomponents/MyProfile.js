@@ -67,12 +67,13 @@ export default function MyProfile() {
   const [showEdit, setShowEdit] = useState(false);
   const [candidateData, setCandidateData] = useState({});
   const [profileStatus, setProfileStatus] = useState(false);
+  const [progressValue, setProgressValue] = useState(0);
 
   // Get the data from
   useEffect(() => {
     if (!user) return;
-    console.log(user);
     setProfileStatus(user.userData.candidateDetails.profileComplete);
+    setCandidateData(user.userData);
     // db.collection(`SelectedCandidates`)
     //   .doc(user.userDocId)
     //   .get()
@@ -82,8 +83,12 @@ export default function MyProfile() {
     //   .catch((err) => {
     //     console.log(err);
     //   });
-  }, []);
+  }, [user]);
 
+  useEffect(() => {
+    if (profileStatus) setProgressValue(100);
+    else setProgressValue(7.6);
+  }, [profileStatus]);
   const showEditFunc = () => {
     console.log("triggered edit function");
     if (!user) return;
@@ -108,7 +113,7 @@ export default function MyProfile() {
             <Grid item lg={3} md={3} xs={12}>
               <Box>
                 <Avatar
-                  src={dummyprofile}
+                  src={candidateData.candidateDetails?.attachments?.photoUrl}
                   style={{
                     margin: "10px",
                     width: 100,
@@ -121,7 +126,7 @@ export default function MyProfile() {
             <Grid item lg={9} md={9} xs={12}>
               <Box className={classes.typoMargin}>
                 <Typography variant="h2" className={classes.typoMargin}>
-                  Ashish H
+                  {candidateData.candidateDetails?.basicDetails.fullName}
                   <Tooltip title={`Edit Profile`}>
                     <IconButton
                       onClick={() => {
@@ -133,7 +138,12 @@ export default function MyProfile() {
                     </IconButton>
                   </Tooltip>
                 </Typography>
-                <Typography variant="h5">Software Developer Intern</Typography>
+                <Typography variant="h5">
+                  {
+                    candidateData.candidateDetails?.internshipDetails
+                      ?.designation
+                  }
+                </Typography>
                 {/* <Typography variant="body1">
                   Resume
                   <Tooltip title={`View Resume`}>
@@ -148,11 +158,20 @@ export default function MyProfile() {
                   <Grid item lg={6} md={6} xs={12}>
                     <Box>
                       <Typography variant="body1">
-                        <b>Email :</b> ashishkalburgi90@gmail.com
+                        <b>Resolute Email :</b>{" "}
+                        {
+                          candidateData?.candidateDetails?.basicDetails
+                            ?.resoluteEmail
+                        }
                       </Typography>
-                      <Typography variant="body1">
-                        <b>Total Experience :</b> 2 years
-                      </Typography>
+                      {/* <Typography variant="body1">
+                        <b>Total Experience :</b>{" "}
+                        {
+                          candidateData?.candidateDetails?.internshipDetails
+                            ?.internshipPeriod
+                        }{" "}
+                        months
+                      </Typography> */}
                       {/* <Typography variant="body1">
                         <b>Vendor Name:</b> asasd
                       </Typography> */}
@@ -161,10 +180,18 @@ export default function MyProfile() {
                   <Grid item lg={6} md={6} xs={12}>
                     <Box>
                       <Typography variant="body1">
-                        <b>Phone Number :</b> 8197212726
+                        <b>Phone Number :</b>{" "}
+                        {
+                          candidateData?.candidateDetails?.basicDetails
+                            ?.phoneNumber
+                        }
                       </Typography>
                       <Typography variant="body1">
-                        <b>Location :</b> Bangalore
+                        <b>Location :</b>{" "}
+                        {
+                          candidateData?.candidateDetails?.basicDetails
+                            ?.location
+                        }
                       </Typography>
                       {/* <Typography variant="body1">
                         <b>Notice Period:</b> 30 days
@@ -174,22 +201,17 @@ export default function MyProfile() {
                 </Grid>
               </Box>
               <Box style={{ display: "flex", justifyContent: "space-between" }}>
-                {profileStatus ? (
-                  <>
-                    <Box width="100%">
-                      <Typography variant="body1">Profile Completed</Typography>
-                      <EffectiveProgressBar variant="determinate" value={100} />
-                    </Box>{" "}
-                  </>
-                ) : (
-                  <>
-                    <Box width="50%">
-                      <Typography variant="body1">
-                        Profile Completion 50%
-                      </Typography>
-                      <EffectiveProgressBar variant="determinate" value={50} />
-                    </Box>
-
+                <>
+                  <Box width="50%">
+                    <Typography variant="body1">
+                      Profile Completion {progressValue}%
+                    </Typography>
+                    <EffectiveProgressBar
+                      variant="determinate"
+                      value={progressValue}
+                    />
+                  </Box>
+                  {!profileStatus && (
                     <Box width="50%" textAlign="center">
                       <Button
                         color="primary"
@@ -202,8 +224,8 @@ export default function MyProfile() {
                         Complete Profile
                       </Button>
                     </Box>
-                  </>
-                )}
+                  )}
+                </>
               </Box>
             </Grid>
             {/* <Grid item lg={4} md={4} xs={12}>

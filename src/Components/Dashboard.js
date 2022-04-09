@@ -19,7 +19,6 @@ import SelectedSignup from "./SelectedSignup";
 import MyProfile from "./loggedincomponents/MyProfile";
 import Document from "./loggedincomponents/Document";
 import ExitForm from "./loggedincomponents/ExitForm";
-
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     display: "flex",
@@ -43,7 +42,7 @@ export default function Dashboard() {
       <div className={classes.contentBody}>
         <div className={classes.toolBar}></div>
         {user != null && <Redirect to="/loggedin/home" />}
-
+        {user == null && <Redirect to="/login" />}
         <Switch>
           <Route path={`/`} component={DashboardHome} exact />
           <Route path={`/login`} component={Login} exact />

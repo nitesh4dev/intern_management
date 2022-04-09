@@ -352,12 +352,11 @@ export default function EditProfile({ candidateData, profileStatus }) {
           },
         });
         callSnackbar(true, "Details saved successfully", "success");
-        setHandleAllReset();
       } catch (err) {
         callSnackbar(true, "Some error occured, please try again", "error");
-        setHandleAllReset();
         console.log(err.message);
       }
+      setHandleAllReset();
       setLoading(false);
     }
   };

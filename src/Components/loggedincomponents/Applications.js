@@ -56,7 +56,7 @@ export default function Applications() {
   const { user } = useContext(AuthContext);
   const { setTitle } = useContext(DataContext);
   const [applications, setApplications] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
+  // const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isApplicationLoading, setIsApplicationLoading] = useState(false);
@@ -71,6 +71,7 @@ export default function Applications() {
         setIsApplicationLoading(false);
       });
   }, []);
+
   //Deadline Calculation
   // useEffect(() => {
   //   if (isApplicationLoading) {
@@ -110,8 +111,8 @@ export default function Applications() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData.length === 0
-              ? applications &&
+            {
+              applications &&
                 applications.map((row, index) => {
                   return (
                     <TableRow key={index}>
@@ -175,41 +176,42 @@ export default function Applications() {
                     </TableRow>
                   );
                 })
-              : filteredData.map((row, index) => {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell align="center">
-                        {row.OpeningDetails.Title}
-                      </TableCell>
-                      <TableCell align="center">
-                        {row.OpeningDetails.Domain}
-                      </TableCell>
-                      <TableCell align="center">
-                        {new Date(row.OpeningDetails.AppliedOn.seconds * 1000)
-                          .toLocaleDateString("en-IN", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })
-                          .replace(/ /g, "-")}
-                      </TableCell>
-                      <TableCell align="center">{row.OpeningStatus}</TableCell>
-                      <TableCell align="center">
-                        <Tooltip title="View Assignment">
-                          <Link
-                            to={"/loggedin/assignments"}
-                            className={classes.actionIcons}
-                            // onClick={() => {
-                            //   setTitle("Tickets");
-                            // }}
-                          >
-                            <OpenInNewIcon color="primary" fontSize="small" />
-                          </Link>
-                        </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+              // : filteredData.map((row, index) => {
+              //     return (
+              //       <TableRow key={index}>
+              //         <TableCell align="center">
+              //           {row.OpeningDetails.Title}
+              //         </TableCell>
+              //         <TableCell align="center">
+              //           {row.OpeningDetails.Domain}
+              //         </TableCell>
+              //         <TableCell align="center">
+              //           {new Date(row.OpeningDetails.AppliedOn.seconds * 1000)
+              //             .toLocaleDateString("en-IN", {
+              //               day: "numeric",
+              //               month: "short",
+              //               year: "numeric",
+              //             })
+              //             .replace(/ /g, "-")}
+              //         </TableCell>
+              //         <TableCell align="center">{row.OpeningStatus}</TableCell>
+              //         <TableCell align="center">
+              //           <Tooltip title="View Assignment">
+              //             <Link
+              //               to={"/loggedin/assignments"}
+              //               className={classes.actionIcons}
+              //               // onClick={() => {
+              //               //   setTitle("Tickets");
+              //               // }}
+              //             >
+              //               <OpenInNewIcon color="primary" fontSize="small" />
+              //             </Link>
+              //           </Tooltip>
+              //         </TableCell>
+              //       </TableRow>
+              //     );
+              //   })
+            }
           </TableBody>
           <TableFooter>
             <TablePagination

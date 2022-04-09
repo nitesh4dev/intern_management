@@ -15,6 +15,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { db } from "../firebase/Firebase";
 import { getAllDocumentsWithWhere } from "../FirebaseFunctions/firebaseFunctions";
 import { timeStampToDateString } from "../UtilityFunctions/utilityFunctions";
 /* 

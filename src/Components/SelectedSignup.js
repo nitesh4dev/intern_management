@@ -80,7 +80,7 @@ export default function SelectedSignup() {
     }
     // Check if the email matches the format we need
     let splittedEmail = resoluteEmail.split(".");
-    if (splittedEmail[1] !== "resoluteai@gmail") {
+    if (splittedEmail[1] !== "resoluteai@gmail" || splittedEmail[2] !== "com") {
       callSnackbar(
         true,
         `Email doesn't match with the Resoluteai.in format`,
@@ -93,7 +93,7 @@ export default function SelectedSignup() {
     if (password.length < 8) {
       callSnackbar(
         true,
-        "The password should be atleast 8 characters long",
+        "The password should be at least 8 characters long",
         "warning"
       );
       return;
@@ -110,7 +110,7 @@ export default function SelectedSignup() {
     }
 
     // Sign UP
-    selectedCandidateSignup(resoluteEmail, personalEmail, password);
+    selectedCandidateSignup(resoluteEmail, personalEmail, password, name);
     resetForm();
   };
   return (

@@ -16,6 +16,8 @@ export default function DataProvide({ children }) {
       .then((snapshot) => {});
   }, []);
 
+  // TOPIC: Check if any of your application's deadline is over, if they are then change the application status to reject, assignment status to not submitted. Disable the submit button.
+  useEffect(() => {}, []);
   return (
     <DataContext.Provider
       value={{

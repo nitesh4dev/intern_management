@@ -44,6 +44,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const Document = () => {
   const classes = useStyles();
   const [index, setIndex] = useState("");
+  const [documentUrl, setDocumentUrl] = useState("");
   const [dataState, setDataState] = useState([
     {
       documentTitle: "NDA",
@@ -145,15 +146,12 @@ const Document = () => {
             variant="body1"
             style={{ marginBottom: "10px", justifyContent: "left" }}
           >
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum.
+            <iframe
+              src="../KungaTashi_resume.pdf"
+              width="800px"
+              height="500px"
+              title="Document Viewer"
+            />
           </Typography>
 
           <Grid container spacing={2}>
