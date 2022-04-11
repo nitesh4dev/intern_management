@@ -42,7 +42,7 @@ export default function Dashboard() {
       <div className={classes.contentBody}>
         <div className={classes.toolBar}></div>
         {user != null && <Redirect to="/loggedin/home" />}
-        {user == null && <Redirect to="/login" />}
+        {user == null && <Redirect to="/selected-signup" />}
         <Switch>
           <Route path={`/`} component={DashboardHome} exact />
           <Route path={`/login`} component={Login} exact />
