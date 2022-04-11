@@ -12,12 +12,12 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import Agreement from "./Agreement";
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import { Check, Close } from "@material-ui/icons";
 import DocumentIcon from "../../common/DocumentIcon";
-
+import { AuthContext } from "../../Context/AuthContext";
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
     textAlign: "center",
@@ -27,9 +27,6 @@ const useStyles = makeStyles((theme) => ({
 
   linkStyle: {
     textDecoration: "none",
-    "&:visited": {
-      color: "black",
-    },
     "&:visited": {
       color: "black",
     },
@@ -45,6 +42,7 @@ const Document = () => {
   const classes = useStyles();
   const [index, setIndex] = useState("");
   const [documentUrl, setDocumentUrl] = useState("");
+  const { user } = useContext(AuthContext);
   const [dataState, setDataState] = useState([
     {
       documentTitle: "NDA",
@@ -95,38 +93,44 @@ const Document = () => {
           {/* <Agreement /> */}
 
           <Grid container spacing={3}>
-            {dataState.map((val, index) => {
-              return (
-                <>
-                  <Grid item lg={2} md={3} xs={6} key={index}>
-                    <Box style={{ textAlign: "center" }}>
-                      {val.agreed ? (
-                        <a
-                          className={classes.linkStyle}
-                          href={val.documentURL}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
+            {user && user.userData.Documents != null ? (
+              dataState.map((val, index) => {
+                return (
+                  <>
+                    <Grid item lg={2} md={3} xs={6} key={index}>
+                      <Box style={{ textAlign: "center" }}>
+                        {val.agreed ? (
+                          <a
+                            className={classes.linkStyle}
+                            href={val.documentURL}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <DocumentIcon
+                              setIndex={setIndex}
+                              index={index}
+                              setModelOpen={setModelOpen}
+                              fileData={val}
+                            />
+                          </a>
+                        ) : (
                           <DocumentIcon
                             setIndex={setIndex}
                             index={index}
                             setModelOpen={setModelOpen}
                             fileData={val}
                           />
-                        </a>
-                      ) : (
-                        <DocumentIcon
-                          setIndex={setIndex}
-                          index={index}
-                          setModelOpen={setModelOpen}
-                          fileData={val}
-                        />
-                      )}
-                    </Box>
-                  </Grid>
-                </>
-              );
-            })}
+                        )}
+                      </Box>
+                    </Grid>
+                  </>
+                );
+              })
+            ) : (
+              <Typography variant="body1" style={{ margin: "10px" }}>
+                No documents currently
+              </Typography>
+            )}
           </Grid>
         </CardContent>
       </Card>
