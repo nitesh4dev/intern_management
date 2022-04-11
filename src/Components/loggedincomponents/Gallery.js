@@ -137,7 +137,7 @@ export default function Gallery() {
         </Grid>
 
         {/* TOPIC: Subscription Plan card */}
-        <Grid item md={5} lg={4}>
+        {/* <Grid item md={5} lg={4}>
           <Card elevation={3}>
             <CardHeader
               className={classes.cardHeader}
@@ -176,10 +176,10 @@ export default function Gallery() {
               // autoPlay
             ></CardMedia>
           </Card>
-        </Grid>
+        </Grid> */}
 
         {/* TOPIC:  Compact Card Design 2*/}
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Paper elevation={1} style={{ overflow: "hidden" }}>
             <Grid container>
               <Grid item xs={12} md={6}>
@@ -228,9 +228,9 @@ export default function Gallery() {
             </Grid>
           </Paper>
         </Grid>
-
+ */}
         {/* TOPIC:  Compact Card Design 1*/}
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Paper elevation={1} style={{ overflow: "hidden" }}>
             <Grid container>
               <Grid item xs={12} md={4}>
@@ -305,16 +305,16 @@ export default function Gallery() {
                       </Grid>
                     </Grid>
                   </Box>
-                  {/* <Typography variant="body1">
+                  <Typography variant="body1">
                     High performance React template built with lots of powerful
                     components across multiple product niches for fast & perfect
                     apps development processes.
-                  </Typography> */}
+                  </Typography>
                 </Box>
               </Grid>
             </Grid>
           </Paper>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Fragment>
   );

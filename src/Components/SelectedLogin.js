@@ -91,8 +91,8 @@ export default function SelectedLogin() {
 
           <ValidatorForm>
             <TextValidator
-              placeholder="Email Address"
-              label="Email Address"
+              placeholder="Please enter ResoluteAI email ID"
+              label="ResoluteAI Email Address"
               className={classes.textFields}
               fullWidth
               variant="outlined"

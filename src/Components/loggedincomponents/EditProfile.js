@@ -90,9 +90,13 @@ const skills = [
   "Skill 6",
 ];
 
-export default function EditProfile({ candidateData, profileStatus }) {
+export default function EditProfile({
+  candidateData,
+  profileStatus,
+  setShowEdit,
+}) {
   const classes = useStyles();
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const candidateDetails = candidateData?.candidateDetails;
   const { callSnackbar } = useContext(SnackbarContext);
   const [loading, setLoading] = useState(false);
@@ -273,7 +277,20 @@ export default function EditProfile({ candidateData, profileStatus }) {
         isfcCode: isfcCode,
       },
     };
-
+    if (phoneNumber.length > 10 || altContactPersonNo.length > 10) {
+      callSnackbar(true, "Phone Number should be 10 digits", "error");
+      return;
+    }
+    if (
+      !candidateDetails.profileComplete &&
+      (panCard.length === 0 ||
+        photo.length === 0 ||
+        resumeFile.length === 0 ||
+        aadharCard.length === 0)
+    ) {
+      callSnackbar(true, "Please Upload All Documents", "error");
+      return;
+    }
     if (
       !fullName ||
       !collegeName ||
@@ -299,58 +316,86 @@ export default function EditProfile({ candidateData, profileStatus }) {
       !linkedInUrl
     ) {
       callSnackbar(true, "Please ensure to fill all the details", "error");
-    } else if (
-      panCard.length === 0 ||
-      photo.length === 0 ||
-      resumeFile.length === 0 ||
-      aadharCard.length === 0
-    ) {
-      callSnackbar(true, "Please Upload All Documents", "error");
     } else {
       setLoading(true);
 
       try {
         if (!user) return;
-        const docRef = db.collection(`SelectedCandidates`).doc(user.userDocId);
+        const docRef = await db
+          .collection(`SelectedCandidates`)
+          .doc(user.userDocId);
         docRef.update({
-          candidateDetails: { ...data, profileComplete: true },
+          "candidateDetails.basicDetails": { ...data.basicDetails },
+          "candidateDetails.bankDetails": { ...data.bankDetails },
+          "candidateDetails.internshipDetails": { ...data.internshipDetails },
         });
 
-        // Upload all the files and save their Urls
-        const resumeRef = storage.child(
-          `SelectedInterns/${user.userDocId}/${resumeFile.name}`
-        );
-        const panCardRef = storage.child(
-          `SelectedInterns/${user.userDocId}/${panCard.name}`
-        );
-        const aadharCardRef = storage.child(
-          `SelectedInterns/${user.userDocId}/${aadharCard.name}`
-        );
-        const photoRef = storage.child(
-          `SelectedInterns/${user.userDocId}/${photo.name}`
-        );
+        if (!candidateDetails.profileComplete) {
+          // Upload all the files and save their Urls
+          const resumeRef = storage.child(
+            `SelectedInterns/${user.userDocId}/${resumeFile.name}`
+          );
+          const panCardRef = storage.child(
+            `SelectedInterns/${user.userDocId}/${panCard.name}`
+          );
+          const aadharCardRef = storage.child(
+            `SelectedInterns/${user.userDocId}/${aadharCard.name}`
+          );
+          const photoRef = storage.child(
+            `SelectedInterns/${user.userDocId}/${photo.name}`
+          );
 
-        resumeRef
-          .put(resumeFile)
-          .then((snapshot) => panCardRef.put(panCard))
-          .then((snapshot) => aadharCardRef.put(aadharCard))
-          .then((snapshot) => photoRef.put(photo))
-          .catch((err) => console.log(err));
+          await resumeRef
+            .put(resumeFile)
+            .then((snapshot) => panCardRef.put(panCard))
+            .then((snapshot) => aadharCardRef.put(aadharCard))
+            .then((snapshot) => photoRef.put(photo))
+            .catch((err) => console.log(err));
 
-        const resumeUrl = await resumeRef.getDownloadURL();
-        const aadharCardUrl = await aadharCardRef.getDownloadURL();
-        const panCardUrl = await panCardRef.getDownloadURL();
-        const photoUrl = await photoRef.getDownloadURL();
+          const resumeUrl = await resumeRef.getDownloadURL();
+          const aadharCardUrl = await aadharCardRef.getDownloadURL();
+          const panCardUrl = await panCardRef.getDownloadURL();
+          const photoUrl = await photoRef.getDownloadURL();
 
+          docRef.update({
+            "candidateDetails.attachments": {
+              aadharCardUrl,
+              photoUrl,
+              resumeUrl,
+              panCardUrl,
+              linkedInUrl,
+            },
+          });
+
+          setUser((prev) => ({
+            ...prev,
+            candidateDetails: {
+              ...prev.candidateDetails,
+              ...data,
+              profileComplete: true,
+              attachments: {
+                aadharCardUrl,
+                photoUrl,
+                resumeUrl,
+                panCardUrl,
+                linkedInUrl,
+              },
+            },
+          }));
+        } else {
+          setUser((prev) => ({
+            ...prev,
+            candidateDetails: {
+              ...prev.candidateDetails,
+              ...data,
+              profileComplete: true,
+            },
+          }));
+        }
         docRef.update({
-          "candidateDetails.attachments": {
-            aadharCardUrl,
-            photoUrl,
-            resumeUrl,
-            panCardUrl,
-            linkedInUrl,
-          },
+          "candidateDetails.profileComplete": true,
         });
+        setShowEdit(false);
         callSnackbar(true, "Details saved successfully", "success");
       } catch (err) {
         callSnackbar(true, "Some error occured, please try again", "error");
@@ -420,6 +465,7 @@ export default function EditProfile({ candidateData, profileStatus }) {
                     label="Phone *"
                     className={classes.mb3}
                     fullWidth
+                    type="number"
                     variant="outlined"
                     name="phoneNumber"
                     value={phoneNumber}
@@ -516,13 +562,13 @@ export default function EditProfile({ candidateData, profileStatus }) {
                   <TextValidator
                     fullWidth
                     variant="outlined"
+                    type="number"
                     label="Alternate Contact Person Number  *"
                     validators={["required"]}
                     errorMessages={["This field is required"]}
                     name="altContactPersonNo"
                     value={altContactPersonNo}
                     size="medium"
-                    multiline
                     className={classes.mb3}
                     onChange={(e) => {
                       onChange(e);
