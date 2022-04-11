@@ -36,6 +36,7 @@ import { DataContext } from "../Context/DataContext";
 import { AuthContext } from "../Context/AuthContext";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import ImageIcon from "@material-ui/icons/Image";
+import VideoLibraryIcon from "@material-ui/icons/VideoLibrary";
 
 const drawerWidth = 280;
 
@@ -196,6 +197,18 @@ export default function Header() {
           },
         },
         {
+          text: "Training",
+          icon: (
+            <VideoLibraryIcon
+              color={title === "Training" ? "primary" : "default"}
+            />
+          ),
+          onClick: () => {
+            setTitle("Training");
+            history.push("/loggedin/training");
+          },
+        },
+        {
           text: "Documents",
           icon: (
             <FileCopy color={title === "Documents" ? "primary" : "default"} />
@@ -342,7 +355,7 @@ export default function Header() {
           </IconButton>
           {user !== null ? (
             <Typography variant="h3" style={{ flexGrow: "1" }}>
-              Welcome {user?.userData?.GeneralDetails?.internName}
+              Welcome {user?.userData?.candidateDetails.basicDetails.fullName}
             </Typography>
           ) : (
             <Typography variant="h3" style={{ flexGrow: "1" }}></Typography>

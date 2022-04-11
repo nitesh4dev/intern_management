@@ -72,38 +72,24 @@ export default function MyProfile() {
   // Get the data from
   useEffect(() => {
     if (!user) return;
-    setProfileStatus(user.userData.candidateDetails.profileComplete);
-    setCandidateData(user.userData);
-    // db.collection(`SelectedCandidates`)
-    //   .doc(user.userDocId)
-    //   .get()
-    //   .then((res) => {
-    //     setProfileStatus(res.data().candidateDetails.profileComplete);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    // setProfileStatus(user.userData.candidateDetails.profileComplete);
+    // setCandidateData(user.userData);
+    db.collection(`SelectedCandidates`)
+      .doc(user.userDocId)
+      .get()
+      .then((res) => {
+        setProfileStatus(res.data().candidateDetails.profileComplete);
+        setCandidateData(res.data());
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [user]);
 
   useEffect(() => {
     if (profileStatus) setProgressValue(100);
     else setProgressValue(7.6);
   }, [profileStatus]);
-  const showEditFunc = () => {
-    console.log("triggered edit function");
-    if (!user) return;
-    setCandidateData(user.userData); 
-    // db.collection(`SelectedCandidates`)
-    //   .doc(user.userDocId)
-    //   .get()
-    //   .then((res) => {
-    //     setCandidateData(res.data());
-    //     console.log(res.data());
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-  };
 
   return (
     <Fragment>
@@ -130,7 +116,6 @@ export default function MyProfile() {
                   <Tooltip title={`Edit Profile`}>
                     <IconButton
                       onClick={() => {
-                        showEditFunc();
                         setShowEdit(!showEdit);
                       }}
                     >
@@ -138,7 +123,8 @@ export default function MyProfile() {
                     </IconButton>
                   </Tooltip>
                 </Typography>
-                <Typography variant="h5">
+                <Typography variant="body1">
+                  <b>Designation :</b>{" "}
                   {
                     candidateData.candidateDetails?.internshipDetails
                       ?.designation
@@ -158,20 +144,17 @@ export default function MyProfile() {
                   <Grid item lg={6} md={6} xs={12}>
                     <Box>
                       <Typography variant="body1">
-                        <b>Resolute Email :</b>{" "}
-                        {
-                          candidateData?.candidateDetails?.basicDetails
-                            ?.resoluteEmail
-                        }
+                        <b>Email :</b>{" "}
+                        {candidateData?.candidateDetails?.basicDetails?.email}
                       </Typography>
-                      {/* <Typography variant="body1">
-                        <b>Total Experience :</b>{" "}
+                      <Typography variant="body1">
+                        <b>Internship Period :</b>{" "}
                         {
                           candidateData?.candidateDetails?.internshipDetails
                             ?.internshipPeriod
                         }{" "}
                         months
-                      </Typography> */}
+                      </Typography>
                       {/* <Typography variant="body1">
                         <b>Vendor Name:</b> asasd
                       </Typography> */}
@@ -217,7 +200,6 @@ export default function MyProfile() {
                         color="primary"
                         variant="contained"
                         onClick={() => {
-                          showEditFunc();
                           setShowEdit(!showEdit);
                         }}
                       >
@@ -254,6 +236,7 @@ export default function MyProfile() {
           <EditProfile
             candidateData={candidateData}
             profileStatus={profileStatus}
+            setShowEdit={setShowEdit}
           />
         ) : null}
       </Box>
