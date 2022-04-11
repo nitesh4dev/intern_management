@@ -65,7 +65,7 @@ export default function SelectedSignup() {
     });
   };
   //Sign Up Selected Interns
-  const handleSignup = () => {
+  const handleSignup = async () => {
     // If both email and password fields are present
     if (
       !personalEmail ||
@@ -110,8 +110,19 @@ export default function SelectedSignup() {
     }
 
     // Sign UP
-    selectedCandidateSignup(resoluteEmail, personalEmail, password, name);
-    resetForm();
+    try {
+      await selectedCandidateSignup(
+        resoluteEmail,
+        personalEmail,
+        password,
+        name
+      );
+      history.push("/selected-login");
+      resetForm();
+    } catch (err) {
+      console.log(err);
+      callSnackbar(true, "An Error Occurred", "error");
+    }
   };
   return (
     <Grid container component="main" className={classes.root}>

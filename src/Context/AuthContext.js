@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { auth, db } from "../firebase/Firebase";
 import { SnackbarContext } from "./SnackbarContext";
 export const AuthContext = createContext();
@@ -8,6 +9,7 @@ export default function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { callSnackbar } = useContext(SnackbarContext);
+  const history = useHistory();
   useEffect(() => {
     // Get current user's data and id from the InternsProfile when the app loads
     auth.onAuthStateChanged((user) => {
@@ -94,7 +96,7 @@ export default function AuthProvider({ children }) {
   };
 
   // Sign Up Function for selected applicants
-  const selectedCandidateSignup = (
+  const selectedCandidateSignup = async (
     resoluteEmail,
     personalEmail,
     password,
@@ -104,57 +106,66 @@ export default function AuthProvider({ children }) {
 
     //  Check if the Intern's personal email is inside the SelectedCandidates
     // collection
-
-    db.collection("SelectedCandidates")
-      .where("candidateDetails.basicDetails.email", "==", personalEmail)
-      .get()
-      .then((querySnapshot) => {
-        if (querySnapshot.docs.length === 0) {
-          callSnackbar(
-            true,
-            "You are not a selected applicant, please sign up as a new candidate",
-            "error"
-          );
-          return;
-        }
-        let selectedCandidateDocRef;
-        querySnapshot.forEach((doc) => {
-          selectedCandidateDocRef = db
-            .collection("SelectedCandidates")
-            .doc(doc.id);
-        });
-
-        auth
-          .createUserWithEmailAndPassword(resoluteEmail, password)
-          .then((userCredentials) => {
-            selectedCandidateDocRef.update({
-              "candidateDetails.profileComplete": false,
-              "candidateDetails.basicDetails.fullName": name,
-              "candidateDetails.basicDetails.resoluteEmail": resoluteEmail,
-              userId: userCredentials.user.uid,
-            });
-            setIsLoading(false);
-            setIsAuthenticated(true);
-            callSnackbar(true, "Account successfully created", "success");
-          })
-          .catch((err) => {
-            if (
-              err.message ===
-              "Firebase: The email address is already in use by another account. (auth/email-already-in-use)."
-            )
-              callSnackbar(
-                true,
-                "Account with the same email exists already, please try again later",
-                "error"
-              );
-            console.log(err.message);
-          });
-        console.log(querySnapshot);
-      })
-      .catch((err) => {
-        callSnackbar(true, "An Error Occured Please try again later", "error");
-        console.log(err);
+    try {
+      let querySnapshot = await db
+        .collection("SelectedCandidates")
+        .where("candidateDetails.basicDetails.email", "==", personalEmail)
+        .get();
+      if (querySnapshot.docs.length === 0) {
+        callSnackbar(
+          true,
+          "You are not a selected applicant, please sign up as a new candidate",
+          "error"
+        );
+        return;
+      }
+      let selectedCandidateDocRef;
+      querySnapshot.forEach((doc) => {
+        selectedCandidateDocRef = db
+          .collection("SelectedCandidates")
+          .doc(doc.id);
       });
+
+      const userCredentials = await auth.createUserWithEmailAndPassword(
+        resoluteEmail,
+        password
+      );
+
+      selectedCandidateDocRef.update({
+        "candidateDetails.profileComplete": false,
+        "candidateDetails.basicDetails.fullName": name,
+        "candidateDetails.basicDetails.resoluteEmail": resoluteEmail,
+        userId: userCredentials.user.uid,
+      });
+      setIsLoading(false);
+      setIsAuthenticated(true);
+      callSnackbar(true, "Account successfully created", "success");
+    } catch (err) {
+      if (
+        err.message ===
+        "Firebase: The email address is already in use by another account. (auth/email-already-in-use)."
+      )
+        callSnackbar(
+          true,
+          "Account with the same email exists already, please try again later",
+          "error"
+        );
+      else
+        callSnackbar(true, "An Error Occured Please try again later", "error");
+    }
+    // .catch((err) => {
+
+    //   return new Promise((resolve, reject) => {
+    //     reject({ accountCreated: false });
+    //   });
+    // });
+    // .catch((err) => {
+
+    //   console.log(err);
+    //   return new Promise((resolve, reject) => {
+    //     reject({ accountCreated: false });
+    //   });
+    // });
   };
   return (
     <AuthContext.Provider

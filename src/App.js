@@ -14,12 +14,12 @@ function App() {
     <div className="App" style={{ backgroundColor: "rgb(250, 251, 251)" }}>
       <ThemeProvider theme={customTheme}>
         <SnackbarProvider>
-          <AuthProvider>
-            <Router>
+          <Router>
+            <AuthProvider>
               <CustomSnackBar />
               <Routes />
-            </Router>
-          </AuthProvider>
+            </AuthProvider>
+          </Router>
         </SnackbarProvider>
       </ThemeProvider>
     </div>
