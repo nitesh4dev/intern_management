@@ -92,7 +92,7 @@ const skills = [
 
 export default function EditProfile({ candidateData, profileStatus }) {
   const classes = useStyles();
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const candidateDetails = candidateData?.candidateDetails;
   const { callSnackbar } = useContext(SnackbarContext);
   const [loading, setLoading] = useState(false);
@@ -308,49 +308,54 @@ export default function EditProfile({ candidateData, profileStatus }) {
       callSnackbar(true, "Please Upload All Documents", "error");
     } else {
       setLoading(true);
-
+      let docRef;
       try {
         if (!user) return;
-        const docRef = db.collection(`SelectedCandidates`).doc(user.userDocId);
+        docRef = db.collection(`SelectedCandidates`).doc(user.userDocId);
         docRef.update({
-          candidateDetails: { ...data, profileComplete: true },
+          "candidateDetails.basicDetails": { ...data.basicDetails },
+          "candidateDetails.bankDetails": { ...data.bankDetails },
+          "candidateDetails.internshipDetails": { ...data.internshipDetails },
         });
+        if (!candidateDetails.profileComplete) {
+          // Upload all the files and save their Urls
+          const resumeRef = storage.child(
+            `SelectedInterns/${user.userDocId}/${resumeFile.name}`
+          );
+          const panCardRef = storage.child(
+            `SelectedInterns/${user.userDocId}/${panCard.name}`
+          );
+          const aadharCardRef = storage.child(
+            `SelectedInterns/${user.userDocId}/${aadharCard.name}`
+          );
+          const photoRef = storage.child(
+            `SelectedInterns/${user.userDocId}/${photo.name}`
+          );
 
-        // Upload all the files and save their Urls
-        const resumeRef = storage.child(
-          `SelectedInterns/${user.userDocId}/${resumeFile.name}`
-        );
-        const panCardRef = storage.child(
-          `SelectedInterns/${user.userDocId}/${panCard.name}`
-        );
-        const aadharCardRef = storage.child(
-          `SelectedInterns/${user.userDocId}/${aadharCard.name}`
-        );
-        const photoRef = storage.child(
-          `SelectedInterns/${user.userDocId}/${photo.name}`
-        );
+          resumeRef
+            .put(resumeFile)
+            .then((snapshot) => panCardRef.put(panCard))
+            .then((snapshot) => aadharCardRef.put(aadharCard))
+            .then((snapshot) => photoRef.put(photo))
+            .catch((err) => console.log(err));
 
-        resumeRef
-          .put(resumeFile)
-          .then((snapshot) => panCardRef.put(panCard))
-          .then((snapshot) => aadharCardRef.put(aadharCard))
-          .then((snapshot) => photoRef.put(photo))
-          .catch((err) => console.log(err));
+          const resumeUrl = await resumeRef.getDownloadURL();
+          const aadharCardUrl = await aadharCardRef.getDownloadURL();
+          const panCardUrl = await panCardRef.getDownloadURL();
+          const photoUrl = await photoRef.getDownloadURL();
 
-        const resumeUrl = await resumeRef.getDownloadURL();
-        const aadharCardUrl = await aadharCardRef.getDownloadURL();
-        const panCardUrl = await panCardRef.getDownloadURL();
-        const photoUrl = await photoRef.getDownloadURL();
+          docRef.update({
+            "candidateDetails.attachments": {
+              aadharCardUrl,
+              photoUrl,
+              resumeUrl,
+              panCardUrl,
+              linkedInUrl,
+            },
+          });
+        } else {
+        }
 
-        docRef.update({
-          "candidateDetails.attachments": {
-            aadharCardUrl,
-            photoUrl,
-            resumeUrl,
-            panCardUrl,
-            linkedInUrl,
-          },
-        });
         callSnackbar(true, "Details saved successfully", "success");
       } catch (err) {
         callSnackbar(true, "Some error occured, please try again", "error");

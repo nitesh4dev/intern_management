@@ -92,7 +92,7 @@ export default function MyProfile() {
   const showEditFunc = () => {
     console.log("triggered edit function");
     if (!user) return;
-    setCandidateData(user.userData);
+    setCandidateData(user.userData); 
     // db.collection(`SelectedCandidates`)
     //   .doc(user.userDocId)
     //   .get()
