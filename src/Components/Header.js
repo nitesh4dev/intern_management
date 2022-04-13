@@ -335,6 +335,7 @@ export default function Header() {
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
+        elevation={0}
         position="fixed"
         color="inherit"
         className={clsx(classes.appBar, {

@@ -21,6 +21,7 @@ import Document from "./loggedincomponents/Document";
 import ExitForm from "./loggedincomponents/ExitForm";
 import Training from "./Training";
 import TrainingVidoes from "./loggedincomponents/TrainingVidoes";
+import TrainingLessons from "./loggedincomponents/TrainingLessons";
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     display: "flex",
@@ -53,8 +54,17 @@ export default function Dashboard() {
           <Route path={`/:openingType`} component={AllOpenings} exact />
           <Route path={`/loggedin/home`} component={LoggedIn} exact />
           <Route path={`/loggedin/myprofile`} component={MyProfile} exact />
+          <Route
+            path={`/loggedin/training/:type`}
+            component={TrainingLessons}
+            exact
+          />
           <Route path={`/loggedin/training`} component={Training} exact />
-          <Route path={`/loggedin/training-videos/:id`} component={TrainingVidoes} exact />
+          <Route
+            path={`/loggedin/training-videos/:id`}
+            component={TrainingVidoes}
+            exact
+          />
           <Route path={`/loggedin/gallery`} component={Gallery} exact />
           <Route path={`/loggedin/openings`} component={Openings} exact />
           <Route path={`/loggedin/documents`} component={Document} exact />

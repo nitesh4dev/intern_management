@@ -72,8 +72,8 @@ export default function TrainingCards({
   const { setTitle } = useContext(DataContext);
   const history = useHistory();
 
-  const redirectFunc = (id) => {
-    history.push(`/loggedin/training-videos/${id}`);
+  const redirectFunc = (type) => {
+    history.push(`/loggedin/training/${type}`);
   };
 
   return (
