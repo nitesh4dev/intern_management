@@ -253,16 +253,17 @@ export default function Header() {
         //     history.push("/loggedin/assignments");
         //   },
         // },
-        {
-          text: "Exit Form",
-          icon: (
-            <ExitToApp color={title === "Exit Form" ? "primary" : "default"} />
-          ),
-          onClick: () => {
-            setTitle("Exit Form");
-            history.push("/loggedin/exit-form");
-          },
-        },
+        // TOPIC: Disable exit form for now.
+        // {
+        //   text: "Exit Form",
+        //   icon: (
+        //     <ExitToApp color={title === "Exit Form" ? "primary" : "default"} />
+        //   ),
+        //   onClick: () => {
+        //     setTitle("Exit Form");
+        //     history.push("/loggedin/exit-form");
+        //   },
+        // },
         {
           text: "Gallery",
           icon: (
