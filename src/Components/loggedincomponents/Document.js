@@ -15,9 +15,11 @@ import {
 import React, { Fragment, useState, useContext } from "react";
 import Agreement from "./Agreement";
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
-import { Check, Close } from "@material-ui/icons";
+import { Check, Close, PictureAsPdf } from "@material-ui/icons";
 import DocumentIcon from "../../common/DocumentIcon";
 import { AuthContext } from "../../Context/AuthContext";
+import { useEffect } from "react";
+import { db } from "../../firebase/Firebase";
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
     textAlign: "center",
@@ -43,24 +45,11 @@ const Document = () => {
   const [index, setIndex] = useState("");
   const [documentUrl, setDocumentUrl] = useState("");
   const { user } = useContext(AuthContext);
-  const [dataState, setDataState] = useState([
-    {
-      documentTitle: "NDA",
-      agreed: false,
-      documentURL: "www.afadf.com",
-    },
-    {
-      documentTitle: "Terms And Conditions",
-      agreed: false,
-      documentURL: "www.afadf.com",
-    },
-    {
-      documentTitle: "Agreement",
-      agreed: false,
-      documentURL: "www.afadf.com",
-    },
-  ]);
-
+  const [document, setDocument] = useState([]);
+  const [modelFile, setModelFile] = useState();
+  const [firstTimeAgreement, setFirstTimeAgreement] = useState(false);
+  const [latestDocument, setLatestDocument] = useState();
+  // const [latestVersionNo, setLatestVersionNo] = useState();
   //Modal state
   const [modelOpen, setModelOpen] = useState(false);
   const modalClose = () => {
@@ -68,20 +57,105 @@ const Document = () => {
     setIndex("");
   };
 
-  const agreeFunc = (indextoChange) => {
+  const agreeFunc = async (indexToChange) => {
     // Check if terms are already agreed for the particular document
-    if (dataState[indextoChange].agreed) {
-      return;
-    }
-    const newData = dataState.map((val, index) => {
+    if (document[indexToChange].agreed) return;
+    const newData = document.map((val, index) => {
       let obj = val;
-      if (indextoChange === index) {
+      if (indexToChange === index) {
         obj = { ...obj, agreed: true };
       }
       return obj;
     });
-    setDataState(newData);
+    setDocument(newData);
+    const docRef = db.collection("SelectedCandidates").doc(user?.userDocId);
+    const querySnapshot = await docRef.get();
+    const updatedUserData = querySnapshot.data();
+    console.log(updatedUserData);
+    if (firstTimeAgreement === true) {
+      docRef.update({
+        documentDetails: {
+          ...updatedUserData.documentDetails,
+          version: latestDocument.version,
+          docId: latestDocument.docId,
+          [newData[indexToChange].documentTitle]: newData[indexToChange].agreed,
+        },
+      });
+      setFirstTimeAgreement(false);
+    } else {
+      docRef.update({
+        documentDetails: {
+          ...updatedUserData.documentDetails,
+          [newData[indexToChange].documentTitle]: newData[indexToChange].agreed,
+        },
+      });
+    }
   };
+
+  useEffect(() => {
+    if (!user) return;
+
+    // If the user hasn't agreed to even one document, then the selected will be false
+    // If the users agrees to even one of the document, then inside documentDetails, we will store the version the user has agreed to and fetch that value only.
+    // 0 represents that the user hasn't agreed to any document version.
+    if (user.userData.documentDetails.version === 0) {
+      setFirstTimeAgreement(true);
+      const docRef = db.collection("Latests").doc("latestDocumentVersion");
+      docRef
+        .get()
+        .then((querySnapshot) => {
+          const latestDocId = querySnapshot.data().docId;
+          return db.collection("LegalDocuments").doc(latestDocId).get();
+        })
+        .then((querySnapshot) => {
+          console.log(querySnapshot);
+          console.log(querySnapshot.data());
+          const latestDocumentData = querySnapshot.data();
+          setLatestDocument({
+            docId: querySnapshot.id,
+            ...querySnapshot.data(),
+          });
+          console.log(latestDocumentData);
+          const data = [
+            {
+              documentTitle: "NDA",
+              documentUrl: latestDocumentData.documentUrls.NDA,
+              agreed: false,
+            },
+            {
+              documentTitle: "agreement",
+              documentUrl: latestDocumentData.documentUrls.agreement,
+              agreed: false,
+            },
+          ];
+          setDocument(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setFirstTimeAgreement(false);
+      const docRef = db
+        .collection("LegalDocuments")
+        .doc(user.userData.documentDetails.docId);
+      docRef.get().then((querySnapshot) => {
+        const documentData = querySnapshot.data();
+        const data = [
+          {
+            documentTitle: "NDA",
+            documentUrl: documentData.documentUrls.NDA,
+            agreed: user.userData.documentDetails.NDA,
+          },
+          {
+            documentTitle: "agreement",
+            documentUrl: documentData.documentUrls.agreement,
+            agreed: user.userData.documentDetails.agreement,
+          },
+        ];
+        setDocument(data);
+      });
+    }
+  }, [user]);
 
   return (
     <Fragment>
@@ -93,8 +167,8 @@ const Document = () => {
           {/* <Agreement /> */}
 
           <Grid container spacing={3}>
-            {user && user.userData.Documents != null ? (
-              dataState.map((val, index) => {
+            {document ? (
+              document.map((val, index) => {
                 return (
                   <>
                     <Grid item lg={2} md={3} xs={6} key={index}>
@@ -102,11 +176,12 @@ const Document = () => {
                         {val.agreed ? (
                           <a
                             className={classes.linkStyle}
-                            href={val.documentURL}
+                            href={val.documentUrl}
                             target="_blank"
                             rel="noreferrer"
                           >
                             <DocumentIcon
+                              setModelFile={setModelFile}
                               setIndex={setIndex}
                               index={index}
                               setModelOpen={setModelOpen}
@@ -115,6 +190,7 @@ const Document = () => {
                           </a>
                         ) : (
                           <DocumentIcon
+                            setModelFile={setModelFile}
                             setIndex={setIndex}
                             index={index}
                             setModelOpen={setModelOpen}
@@ -143,7 +219,7 @@ const Document = () => {
       >
         <DialogContent className={classes.modalContainer}>
           <Typography variant="subtitle1" style={{ marginBottom: "10px" }}>
-            <b>Terms and Conditions</b>
+            <b>{modelFile?.documentTitle}</b>
           </Typography>
 
           <Typography
@@ -151,8 +227,8 @@ const Document = () => {
             style={{ marginBottom: "10px", justifyContent: "left" }}
           >
             <iframe
-              src="../KungaTashi_resume.pdf"
-              width="800px"
+              src={modelFile?.documentUrl}
+              width="500px"
               height="500px"
               title="Document Viewer"
             />

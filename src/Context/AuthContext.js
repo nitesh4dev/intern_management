@@ -132,6 +132,11 @@ export default function AuthProvider({ children }) {
       );
 
       selectedCandidateDocRef.update({
+        documentDetails: {
+          version: 0,
+          NDA: false,
+          agreement: false,
+        },
         "candidateDetails.profileComplete": false,
         "candidateDetails.basicDetails.fullName": name,
         "candidateDetails.basicDetails.resoluteEmail": resoluteEmail,

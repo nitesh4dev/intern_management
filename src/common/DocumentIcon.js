@@ -22,6 +22,7 @@ const DocumentIcon = (props) => {
     <>
       <IconButton
         onClick={() => {
+          props.setModelFile(props.fileData);
           props.setIndex(props.index);
           if (!props.fileData.agreed) props.setModelOpen(true);
         }}
