@@ -14,6 +14,8 @@ export default function Routes() {
     <Router>
       <Switch>
         {/* <Route path={`/login`} component={Login} exact /> */}
+
+        {/* localhost:3000 or the website's main domain renders DashboardRoutes */}
         <Route path={"/"} component={DashboardRoutes} />
         {/* <Route path={`/dashboard`} component={DashboardRoutes} /> */}
       </Switch>

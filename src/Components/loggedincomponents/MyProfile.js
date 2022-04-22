@@ -72,8 +72,8 @@ export default function MyProfile() {
   // Get the data from
   useEffect(() => {
     if (!user) return;
-    // setProfileStatus(user.userData.candidateDetails.profileComplete);
-    // setCandidateData(user.userData);
+
+    // Get the user data from firebase
     db.collection(`SelectedCandidates`)
       .doc(user.userDocId)
       .get()
@@ -130,16 +130,6 @@ export default function MyProfile() {
                       ?.designation
                   }
                 </Typography>
-                {/* <Typography variant="body1">
-                  Resume
-                  <Tooltip title={`View Resume`}>
-                    <OpenInNew
-                      color="primary"
-                      fontSize="small"
-                      style={{ paddingTop: "5px" }}
-                    />
-                  </Tooltip>
-                </Typography> */}
                 <Grid container spacing={3}>
                   <Grid item lg={6} md={6} xs={12}>
                     <Box>
@@ -155,9 +145,6 @@ export default function MyProfile() {
                         }{" "}
                         months
                       </Typography>
-                      {/* <Typography variant="body1">
-                        <b>Vendor Name:</b> asasd
-                      </Typography> */}
                     </Box>
                   </Grid>
                   <Grid item lg={6} md={6} xs={12}>
@@ -176,9 +163,6 @@ export default function MyProfile() {
                             ?.location
                         }
                       </Typography>
-                      {/* <Typography variant="body1">
-                        <b>Notice Period:</b> 30 days
-                      </Typography> */}
                     </Box>
                   </Grid>
                 </Grid>
@@ -210,26 +194,8 @@ export default function MyProfile() {
                 </>
               </Box>
             </Grid>
-            {/* <Grid item lg={4} md={4} xs={12}>
-              <Box>
-                <Typography variant="h2" className={classes.typoMargin}>
-                  Skills
-                </Typography>
-                <li>Leadership</li>
-                <li>Team Player</li>
-                <li>Great Communicator</li>
-                <li>Leadership</li>
-              </Box>
-            </Grid> */}
           </Grid>
         </CardContent>
-
-        {/* <Divider />
-        <CardContent>
-          <Typography variant="h3" className={classes.typoMargin}>
-            Experience Details
-          </Typography>
-        </CardContent> */}
       </Card>
       <Box style={{ marginTop: "20px" }}>
         {showEdit ? (
