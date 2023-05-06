@@ -1,0 +1,63 @@
+table {
+    border-collapse: collapse;
+    margin: auto;
+    width: 90%;
+    max-width: 800px;
+  }
+  
+  td {
+    text-align: center;
+    border: 2px solid #a9dce3;
+    height: 70px;
+    width: 70px;
+  }
+
+  .fewData:hover{
+    background-color: rgb(224, 214, 214);
+  }
+  
+  th {
+    border: 2px solid #a9dce3;
+    background-color:  #7689de;
+    color: white;
+    height: 40px;
+  }
+  
+  td {
+    cursor: pointer;
+  }  
+  button {
+    background-color: #ffffff;
+    color: #fa2609;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 5px;
+  }
+  
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+.present strong{
+    background-color: #008970;
+    padding: 6px 10px;
+    border-radius: 50%;
+    color: white;
+}
+
+.absent strong{
+    background-color: #e23c52;
+    padding: 6px 10px;
+    border-radius: 50%;
+    color: white;
+}
+
+.attTable .controles{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

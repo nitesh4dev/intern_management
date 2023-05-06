@@ -26,7 +26,6 @@ export default function AuthProvider({ children }) {
     auth.onAuthStateChanged((user) => {
       /* As mentioned in the previous comment paragraph, the function will get trigged whenever the app starts, even if we are in logged out state, therefore we have added a guard clause to set user state from the database only when firebase authenticated user is present and is not null or undefined.*/
       if (user) {
-        console.log(user);
 
         /* If the firebase user exists, we check whether it belongs to InternsProfile collection, or SelectedCandidates collection and based on that we add the data to the user state and assign the type also.*/
         db.collection("InternsProfile")
@@ -118,7 +117,6 @@ export default function AuthProvider({ children }) {
     auth
       .signInWithEmailAndPassword(email, password)
       .then((res) => {
-        console.log("Login successful");
         setIsLoading(false);
 
         /* If the login was successful, authentication state is changed to true, which will again trigger the onAuthStateChanged method, but this time the user will not be null, thus we get the user's uid and check it against our firestore database .*/

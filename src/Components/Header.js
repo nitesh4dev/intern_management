@@ -218,6 +218,16 @@ export default function Header() {
             history.push("/loggedin/documents");
           },
         },
+        {
+          text: "Attendance",
+          icon: (
+            <FileCopy color={title === "Attendance" ? "primary" : "default"} />
+          ),
+          onClick: () => {
+            setTitle("Attendance");
+            history.push("/loggedin/attendance");
+          },
+        },
         // {
         //   text: "Openings",
         //   icon: (

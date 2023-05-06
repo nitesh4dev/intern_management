@@ -1,0 +1,37 @@
+.attendance {
+    display: flex;
+}
+
+.attendanceLeft {
+    display: flex;
+    flex-direction: column;
+    /* background-color: aqua; */
+    flex-basis: 46%;
+}
+
+.attendanceLeft .calendar {
+    position: fixed;
+    width: 40%;
+    top: 27%;
+    left: 18%;
+}
+
+.attendanceLeft .clock {
+    display: flex;
+    justify-content: space-between;
+}
+
+.attendanceLeft .clock button {
+    background-color: #ffffff;
+    color: #fa2609;
+    border: 2px solid #fa2609;
+    font-size: 20px;
+    padding: 10px 30px;
+    transition: .3s;
+}
+
+.attendanceLeft .clock button:hover {
+    background-color: #fa2609;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+}
