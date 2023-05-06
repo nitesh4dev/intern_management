@@ -22,6 +22,8 @@ import ExitForm from "./loggedincomponents/ExitForm";
 import Training from "./Training";
 import TrainingVidoes from "./loggedincomponents/TrainingVidoes";
 import TrainingLessons from "./loggedincomponents/TrainingLessons";
+import  Attendance  from "./attendance/attendance";
+
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     display: "flex",
@@ -59,7 +61,7 @@ export default function Dashboard() {
           <Route path={`/`} component={DashboardHome} exact />
 
           {/* Login component is for new candidates who would like to apply as a new intern */}
-          <Route path={`/login`} component={Login} exact />
+          <Route path={`/login`} component={Login} exact /> 
 
           {/* SelectedLogin component is for onboarding selected candidate shortlisted from somewhere else or from this portal itself. */}
           <Route path={`/selected-login`} component={SelectedLogin} exact />
@@ -72,6 +74,8 @@ export default function Dashboard() {
 
           {/* LoggedIn: home section acts like dashboard, which hasn't been coded whole and its there as placeholder for now. */}
           <Route path={`/loggedin/home`} component={LoggedIn} exact />
+
+          <Route path={`/loggedin/attendance`} component={Attendance} exact />
 
           {/* MyProfile component: is an extensive form for the selected candidate, viewable after logging in, that has to be filled by the candidate as part of onboarding process. */}
           <Route path={`/loggedin/myprofile`} component={MyProfile} exact />
