@@ -5,6 +5,7 @@ import './calendar.css'
 const Calendar = (props) => {
   const { dataForCalendar, fetchAttData } = props
   const [selectedDate, setSelectedDate] = useState(moment());
+  const [disaPrev, setDisablePrev] = useState(false)
 
   const handlePrevMonth = () => {
     const newSelectedDate = selectedDate.clone().subtract(1, 'month');
@@ -12,6 +13,10 @@ const Calendar = (props) => {
     const month = newSelectedDate.format('MMMM');
     fetchAttData([year, month]);
     setSelectedDate(newSelectedDate);
+    if (newSelectedDate.isBefore("2023-06-06", "month")) {
+      setDisablePrev(true)
+      return;
+    }
   };
 
   const handleNextMonth = () => {
@@ -28,7 +33,7 @@ const Calendar = (props) => {
 
   const startBlank = [];
   for (let i = 0; i < firstDayOfMonth; i++) {
-    startBlank.push(<td key={i*10}></td>);
+    startBlank.push(<td key={i * 10}></td>);
   }
 
   const endBlank = [];
@@ -80,7 +85,12 @@ const Calendar = (props) => {
             <tr>
               <th colSpan="7">
                 <div className="controles">
-                  <button onClick={handlePrevMonth}>Prev</button>
+                  <button
+                    onClick={handlePrevMonth}
+                    disabled={disaPrev}
+                  >
+                    Prev
+                  </button>
                   {selectedDate.format("MMMM YYYY")}
 
                   <button

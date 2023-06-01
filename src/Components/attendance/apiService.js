@@ -81,7 +81,7 @@ export const addUserLogin = async (id) => {
 
 export const getUserAttendance = async (data) => {
     try {
-        let inputYear = data[1]? data[1]: year;
+        let inputYear = data[1] ? data[1] : year;
         let inputMonth = data[2] ? data[2] : months[m];
         let attData = []
         let querySnapshot = await getDoc(doc(db, `userAttendance/${data[0]}/${inputYear}`, inputMonth));
@@ -95,8 +95,8 @@ export const getUserAttendance = async (data) => {
             })
 
             if (findToday) {
-                    let isCheckedIn = !(findToday[1].login_times.length === findToday[1].logout_times.length)
-                    return [false, isCheckedIn, attData]
+                let isCheckedIn = !(findToday[1].login_times.length === findToday[1].logout_times.length)
+                return [false, isCheckedIn, attData]
             }
             else {
                 return [true, false, attData]
