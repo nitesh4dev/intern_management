@@ -1,5 +1,6 @@
 .attendance {
     display: flex;
+    justify-content: flex-start;
 }
 
 .attendanceLeft {
@@ -7,6 +8,16 @@
     flex-direction: column;
     /* background-color: aqua; */
     flex-basis: 46%;
+}
+
+.attendanceRight {
+    /* display: flex;
+justify-content: flex-end;
+    flex-direction: column;
+    background-color: aqua; 
+    flex-basis: 54%; */
+
+    width:auto;
 }
 
 .attendanceLeft .calendar {

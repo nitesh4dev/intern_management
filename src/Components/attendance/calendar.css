@@ -44,14 +44,14 @@ table {
 
 .present strong{
     background-color: #008970;
-    padding: 6px 10px;
+    padding: 2px 10px;
     border-radius: 50%;
     color: white;
 }
 
 .absent strong{
     background-color: #e23c52;
-    padding: 6px 10px;
+    padding: 2px 10px;
     border-radius: 50%;
     color: white;
 }
@@ -60,4 +60,8 @@ table {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.calendar td.passed {
+  background-color: #ccc;
 }

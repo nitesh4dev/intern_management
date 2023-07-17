@@ -11,6 +11,7 @@ import moment from "moment/moment";
 
 
 
+
 const Attendance = () => {
     const { user } = useContext(AuthContext);
     const userDetails = user.userData.candidateDetails.basicDetails;
@@ -21,6 +22,8 @@ const Attendance = () => {
     const [disableCheck, setDisableCheck] = useState(false);
     const [dataForCalendar, setDataForCalendar] = useState([]);
     const [showButton, setShowButton] = useState(true)
+    const [detail, setDetail] = useState([])
+    const [attendanceLog, setAttendanceLog] = useState({})
 
     const currYear = moment().get('year');
     const m = moment().get('month');
@@ -72,8 +75,27 @@ const Attendance = () => {
         })
     }
 
+
+    const absentDays = (statuses) => {
+        const currentDate = new Date().getDate() - 1
+        const currentDay = new Date().getDay();
+        const newArray = statuses.map((status, index) => {
+            if (index <= currentDate && status === 'D') {
+                return 'A';
+            }
+            else if (currentDate % 7 === currentDay) {
+                return 'H';
+            }
+            return status;
+        });
+        setDataForCalendar(newArray)
+    };
+
+
+
     const makeStatusArr = (arrData) => {
         const attendanceStatuses = [];
+console.log(arrData)
 
         for (let i = 0; i < 31; i++) {
             attendanceStatuses.push('D')
@@ -84,20 +106,24 @@ const Attendance = () => {
                 attendanceStatuses[dayOfMonth - 1] = 'P';
             }
         });
-        setDataForCalendar(attendanceStatuses)
+        absentDays(attendanceStatuses)
+        setDetail(arrData)
+
     }
 
-    const fetchAttData = (params) => {
-        console.log(params[0]+'==='+currYear)
-        console.log(params[1]+'==='+currMonth)
 
-        console.log(params[0] === currYear.toString() && params[1] === currMonth)
-        if (params[0] === currYear.toString() && params[1] === currMonth) { 
-            setShowButton(true)    
-         }
-         else{
+
+    const fetchAttData = (params) => {
+        // console.log(params[0] + '===' + currYear)
+        // console.log(params[1] + '===' + currMonth)
+
+        // console.log(params[0] === currYear.toString() && params[1] === currMonth)
+        if (params[0] === currYear.toString() && params[1] === currMonth) {
+            setShowButton(true)
+        }
+        else {
             setShowButton(false)
-         }
+        }
         apiService.getUserAttendance([id, params[0], params[1]]).then(res => {
             setFirstLogin(res[0])
             setIsCheckedIn(res[1])
@@ -125,23 +151,28 @@ const Attendance = () => {
         )
     }
 
+
+
     return (
-        <div className="attendance">
+        <div className="attendance " style={{ position: "relative" }}>
             <div className="attendanceLeft">
                 <div className="clock">
                     <Clock format={'HH:mm:ss'} ticking={true} style={{ marginRight: "20px", fontSize: "30px" }} />
                     {
-                       showButton&&
-                       CheckButtons()
+                        showButton &&
+                        CheckButtons()
                     }
                 </div>
                 <div className="calendar">
                     <Calendar
                         dataForCalendar={dataForCalendar}
                         fetchAttData={fetchAttData}
+                        detail={detail}
+
                     />
                 </div>
             </div>
+
         </div>
     )
 }

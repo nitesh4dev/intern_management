@@ -13,6 +13,8 @@ export const addAttendance = async (data) => {
     data[1].checkin_times.push(moment().format("hh:mm:ss a"))
     try {
         const userDocRef = doc(db, `attendance/${year}/${months[m]}`, date.toString());
+        // const userDocRef = doc(db, `lala/${year}/${months[m]}`, date.toString())
+
         await setDoc(userDocRef, { [data[0]]: data[1] }, { merge: true });
     }
     catch (err) {
@@ -24,7 +26,8 @@ export const addLogout = async (id) => {
     try {
         const time = (moment().format("hh:mm:ss a"));
         // await updateDoc(doc(db, 'attendance', '17-03-2023'), { '1677390103.logout_times': arrayUnion('45') })
-        await updateDoc(doc(db, `attendance/${year}/${months[m]}`, date.toString()), { [`${id}.logout_times`]: arrayUnion(time) })
+        // await updateDoc(doc(db, `attendance/${year}/${months[m]}`, date.toString()), { [`${id}.logout_times`]: arrayUnion(time) })
+        await updateDoc(doc(db, `lala/${year}/${months[m]}`, date.toString()), { [`${id}.logout_times`]: arrayUnion(time) })
     }
     catch (err) {
         console.log("Error", err)
@@ -36,6 +39,7 @@ export const addLogin = async (id) => {
         const time = (moment().format("hh:mm:ss a"));
         // await updateDoc(doc(db, 'attendance', '17-03-2023'), { '1677390103.logout_times': arrayUnion('45') })
         await updateDoc(doc(db, `attendance/${year}/${months[m]}`, date.toString()), { [`${id}.login_times`]: arrayUnion(time) })
+        // await updateDoc(doc(db, `lala/${year}/${months[m]}`, date.toString()), { [`${id}.login_times`]: arrayUnion(time) })
         return true
     }
     catch (err) {
@@ -48,6 +52,8 @@ export const addUserAttendance = async (data) => {
     data[1].date = `${date}/${m + 1}/${year}`;
     try {
         const userDocRef = doc(db, `userAttendance/${data[0]}/${year}`, months[m]);
+        // const userDocRef = doc(db, `lala/${year}/${months[m]}, ${data[0]}`);
+
         await setDoc(userDocRef, { [date]: data[1] }, { merge: true });
         return [data[0], data[1]]
     }
@@ -60,6 +66,7 @@ export const addUserLogout = async (id) => {
     try {
         const time = (moment().format("hh:mm:ss a"));
         await updateDoc(doc(db, `userAttendance/${id}/${year}`, months[m]), { [`${date.toString()}.logout_times`]: arrayUnion(time) })
+        // await updateDoc(doc(db, `lala/${months[m],year}/${id}`), { [`${date.toString()}.logout_times`]: arrayUnion(time) })
         return true
     }
     catch (err) {
@@ -72,6 +79,7 @@ export const addUserLogin = async (id) => {
     try {
         const time = (moment().format("hh:mm:ss a"));
         await updateDoc(doc(db, `userAttendance/${id}/${year}`, months[m]), { [`${date.toString()}.login_times`]: arrayUnion(time) })
+    //  await updateDoc(doc(db,`lala/${months[m],year}/${id}`,{ [`${date.toString()}.login_times`]: arrayUnion(time)}))
         return true
     }
     catch (err) {
@@ -85,6 +93,7 @@ export const getUserAttendance = async (data) => {
         let inputMonth = data[2] ? data[2] : months[m];
         let attData = []
         let querySnapshot = await getDoc(doc(db, `userAttendance/${data[0]}/${inputYear}`, inputMonth));
+        // let querySnapshot = await getDoc(doc(db, `lala/${inputMonth, inputYear}/ ${data[0]}`));
         if (querySnapshot.data()) {
             attData = Object.entries(querySnapshot.data());
 
