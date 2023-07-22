@@ -95,7 +95,7 @@ const Attendance = () => {
 
     const makeStatusArr = (arrData) => {
         const attendanceStatuses = [];
-console.log(arrData)
+        console.log(arrData)
 
         for (let i = 0; i < 31; i++) {
             attendanceStatuses.push('D')
@@ -154,7 +154,7 @@ console.log(arrData)
 
 
     return (
-        <div className="attendance " style={{ position: "relative" }}>
+        <div className="attendance" style={{ position: "relative" }}>
             <div className="attendanceLeft">
                 <div className="clock">
                     <Clock format={'HH:mm:ss'} ticking={true} style={{ marginRight: "20px", fontSize: "30px" }} />

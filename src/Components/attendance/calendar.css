@@ -1,8 +1,9 @@
 table {
     border-collapse: collapse;
     margin: auto;
-    width: 90%;
-    max-width: 800px;
+    width: 70%;
+    /* max-width: 500px; */
+    /* height: 100px; */
   }
   
   td {
@@ -20,7 +21,7 @@ table {
     border: 2px solid #a9dce3;
     background-color:  #7689de;
     color: white;
-    height: 40px;
+    height: 20px;
   }
   
   td {

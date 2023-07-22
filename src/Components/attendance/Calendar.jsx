@@ -218,7 +218,10 @@ const Calendar = (props) => {
   return (
     <>
       <div>{renderCalendar()}</div>
-      <div className="attendanceRight" style={{ position: "absolute", top: "93px", left: "600px", zIndex: "0" }}>
+      <div
+      //  className="attendanceRight"
+      //  style={{ position: "absolute", top: "93px", left: "600px", zIndex: "0" }}
+       >
         <Details detail={detail} dates={dates} loginTime={loginTime} logoutTime={logoutTime} />
       </div>
     </>

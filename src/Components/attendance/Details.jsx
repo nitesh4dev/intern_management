@@ -32,9 +32,12 @@ const Details = ({ detail, dates, loginTime, logoutTime }) => {
 
   return (
     <>
-      <div>
+      <div style={{
+          display: "flex", alignItems:"center",justifyContent:"center",
+          flexDirection:"column"
+      }}>
         <div style={{
-          display: "flex", alignItems:"center", height: "50px", width: "600px", border: "2px solid green", margin: "10px"
+          display: "flex", alignItems:"center", height: "50px", width: "400px", border: "2px solid green", margin: "10px"
         }}>
           <div>
             <p style={{fontSize:"20px", padding:"25px",  flexBasis: '30%'}}>{dates}</p>

@@ -1,13 +1,17 @@
 .attendance {
     display: flex;
     justify-content: flex-start;
+    /* height: 1200px;
+    background-color: #fa2609;
+    width: 200px; */
 }
 
 .attendanceLeft {
     display: flex;
     flex-direction: column;
     /* background-color: aqua; */
-    flex-basis: 46%;
+    /* flex-basis: 46%; */
+    
 }
 
 .attendanceRight {
@@ -18,13 +22,18 @@ justify-content: flex-end;
     flex-basis: 54%; */
 
     width:auto;
+    /* background-color: blue; */
 }
 
 .attendanceLeft .calendar {
-    position: fixed;
+    /* position: fixed;
     width: 40%;
     top: 25%;
-    left: 18%;
+    left: 18%; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: red; */
 }
 
 .attendanceLeft .clock {
