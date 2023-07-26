@@ -9,170 +9,210 @@ import {
   Select,
   TextField,
 } from "@material-ui/core";
+// import { Grid } from '@mui/material';
+
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Autocomplete from '@mui/material/Autocomplete';
+
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+import { Yard } from "@mui/icons-material";
+
+import { db } from "../../firebase/Firebase";
+import {collection, getDoc, doc, setDoc, updateDoc, arrayUnion, addDoc } from "firebase/firestore";
+import { getAuth, updateProfile } from 'firebase/auth'
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  height:'400px',
+};
 
 
-const RModal = (dataForCalendar) => {
+
+function getMonthNumber(monthName) {
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const monthIndex = monthNames.findIndex((name) => name.toLowerCase() === monthName.toLowerCase());
+
+  // If the provided month name is valid, return the corresponding month number (0-indexed)
+  if (monthIndex !== -1) {
+    return monthIndex + 1;
+  } else {
+    // Return -1 or throw an error if the month name is not valid
+    return -1;
+  }
+}
+
+
+
+const RModal = ({date, month, year}) => {
+  console.log("date is = " + date+ "month is = "+month+"year is = "+ year);
+  const [rDate, setRDate] = useState(new Date(year,getMonthNumber(month)-1,date))
+  console.log(rDate)
   const [open, setOpen] = useState(false);
-  const [leaveDetails, setLeaveDetails] = useState({
-    name: "",
-    startDate: "",
-    endDate: "",
-    reason: "",
-  });
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  const [manager, setManager] = React.useState([{name:'ram'},{name:'ram'},{name:'ram'}]);
-  const [selectedDate, setSelectedDate] = React.useState(new Date('2023-06-14'));
+  const [selectedOption, setSelectedOption] = useState('');
+  const options = ['Pawan', 'Piyush', 'Suman'];
+  const [inputValue, setInputValue] = useState('');
+  const [textareaValue, setTextareaValue] = useState('');
 
+  const regularizationCollectionRef = collection(db, "regularization");
 
-  const handleChange = (event) => {
-    setManager(event.target.value);
+  console.log(getAuth().currentUser.displayName)
+
+  const handleDropdownChange = (event) => {
+    setSelectedOption(event.target.value);
   };
 
-  const handleOpen = () => {
-    setOpen(true);
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    const auth = getAuth()
+
+
+    const obj = {
+      // taskid: taskID,
+     
+      askingDate:rDate,
+      applyDate: new Date(),
+      name: inputValue,
+      manager:selectedOption,
+      reason:textareaValue,
+      status:false
+      
+  }
+
+       
+  await addDoc(regularizationCollectionRef,obj)
+    
+    
+
     handleClose();
   };
 
+  const handleTextareaChange = (event) => {
+    setTextareaValue(event.target.value);
+  };
+
+
+
   return (
-    <div>
+    <div  >
       <button
         style={{
           position: "absolute",
-          top: "40px",
-          left: "40px",
-          border: "black solid 1px",
-          borderRadius: "5px",
-          cursor: "pointer",
-          // fontSize: "14px",
-          padding: "1px",
-          // color:"grey"
+          top: "10px",
+          left: "30px",
+          // border: "black solid 1px",
+          borderRadius: "50%",
+          // cursor: "pointer",
+          fontSize: "1.2rem",
+          padding: "13px 15px",
+          // zIndex:"0",
+          // height:"20px",
+          backgroundColor:"rgb(9, 3, 15)",
+          
+          // visibility:"hidden"
+          color:"rgb(245, 221, 4)",
+          fontStyle:"bolder",
+          fontWeight:"500"
+
           // display:"flex",
           // justifyContent:"center",
           // alignItems:"center"
+          
 
 
         }}
         onClick={handleOpen}
-      > + </button>
-
-      {open && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "rgba(0, 0, 0, 0.5)",
-            zIndex: "1000000",
-          }}
-        >
-          <div
-            style={{
-              background: "#fff",
-              padding: "2rem",
-              borderRadius: "5px",
-              maxWidth: "600px",
-              width: "100%",
-              position: "relative", // Added position for cross button
-            }}
-          >
-            <button
-              style={{
-                position: "absolute",
-                top: "0.5rem",
-                right: "0.5rem",
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
-                fontSize: "1.2rem",
-              }}
-              onClick={handleClose}
-            >
-              &times;
-            </button>
-
-            <h2 style={{ textAlign: "center" }}>Regularization Form</h2>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-
-              <div sx={{ minWidth: 90, margin: "10px" }}>
-                <FormControl fullWidth variant="outlined">
-                  <InputLabel id="demo-simple-select-label">Manager</InputLabel>
-                  <Select
-                    required
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    // value={manager}
-                    label="manager"
-                    onChange={handleChange}
-                  >
-                    <MenuItem >Pawan Kumar</MenuItem>
-                    <MenuItem value={2}>Parikshit Bangde</MenuItem>
-                    <MenuItem value={3}>Piyush Patil</MenuItem>
-                  </Select>
-                </FormControl>
+      > <strong>A</strong>  </button>
+    
+    <Modal style={{alignItems:"center"}}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+        <h1 style={{ textAlign: "center" }}>Regularization Form</h1>
+    
+        <br />
+        <form onSubmit={handleSubmit} style={{textAlign:"center"}}>
+        <Autocomplete
+        freeSolo
+        options={options}
+        onChange={(event, newValue) => setSelectedOption(newValue)}
+        renderInput={(params) => (
+          <TextField {...params} label="Select Manager" variant="outlined" required />
+        )}
+      />
+<br />
 
 
+<Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              label="Name"
+              name="firstName"
+              variant="outlined"
+              value={inputValue}
+              onChange={(e)=>setInputValue(e.target.value)}
+              fullWidth
+              required
+            />
+          </Grid>
+          </ Grid>
+    
+    <br />
+      {/* Input field */}
+      <TextareaAutosize
+        minRows={3}
+        placeholder="Enter the Reason"
+        value={textareaValue}
+        onChange={handleTextareaChange}
+        style={{ width: '100%', resize: 'none' }}
+        required
+      />
+<br />
 
+      {/* Submit button */}
+      <Button
+        variant="contained"
+        color="primary"
+        type="submit"
+        // style={{ marginLeft: 8 }}
+      >
+        Submit
+      </Button>
+    </form>
 
+  
+        </Box>
+      </Modal>
 
 
 
 
 
 
-              </div>
 
-              <div style={{ padding: "10px", display: "flex", flexDirection: "column" }} >
-                <TextField
-                  required
-                  id="outlined-read-only-input"
-                  label="Name"
-                  defaultValue="  Aman Prakash"
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  variant="outlined"
-                />
-
-
-
-
-                <TextField
-                  required
-                  id="outlined-required"
-                  label="Reason"
-                  defaultValue=""
-                  fullWidth
-                  variant="outlined"
-                />
-
-              </div>
-            </div>
-
-            <Button variant='outlined' onClick={handleSubmit}>Submit </Button>
-
-          </div>
-        </div>
-      )
-      }
     </div >
   );
 };

@@ -12,6 +12,8 @@ const Calendar = (props) => {
   const [dates, setDates] = useState(new Date().getDate())
   const [loginTime, setLoginTime] = useState(null)
   const [logoutTime, setLogoutTime] = useState(null)
+  const [absent, setAbsent] = useState(false)
+  
 
 
   const handlePrevMonth = () => {
@@ -86,12 +88,15 @@ const Calendar = (props) => {
 
   const days = [];
   const currentDate = new Date();
+  const year = selectedDate.format('YYYY');
+  const month = selectedDate.format('MMMM');
   for (let d = 1; d <= daysInMonth; d++) {
 
     const isDatePassed = d < currentDate.getDate(); 
+    // console.log(isDatePassed)
     const cellStyle = isDatePassed ? { backgroundColor: "#ccc" } : {};
     const cellClassName = isDatePassed ? "passed" : "";
-
+    
     days.push(
 
       // <td key={d} className={dataForCalendar[d - 1] === 'D' ? "" : dataForCalendar[d - 1] === "P" ? 'present fewData' : 'absent fewData'}>
@@ -101,26 +106,35 @@ const Calendar = (props) => {
         setDates(d)
         handleDateClick(d)
       }}>
-        <Button style={{ top: "-25px", left: "-25px", padding:"0px" }} >
+        <Button style={{ top: "-25px", left: "-25px", padding:"0rem"  }} >
           {/* Replace this with your API data */}
-          <div style={{ position: 'absolute' }}>
+          <div>
             <strong>{d.toString().padStart(2, '0')}</strong>
-            {dataForCalendar[d - 1] === 'D' ? "" : dataForCalendar[d - 1] === "P" ? '' : <RModal />}
+            {dataForCalendar[d - 1] === 'D' ? "" : dataForCalendar[d - 1] === "P" ? '' : <RModal
+            date = {d}
+            month = {month}
+            year = {year}
+            />}
+            
           </div>
 
         </Button>
         <div className={dataForCalendar[d - 1] === 'D' ? "" : dataForCalendar[d - 1] === "P" ? 'present' : 'absent'}
           style={{
             position: "absolute",
-            right: "20px",
-            bottom: "20px",
+            right: "15px",
+            bottom: "15px",
             fontSize: "20px",
             padding:"0px"
           }}>
             <strong>
-          {dataForCalendar[d - 1] === 'D' ? "" : dataForCalendar[d - 1] === "P" ? 'P' : 'A'}
+          {dataForCalendar[d - 1] === 'D' ? "" : dataForCalendar[d - 1] === "P" ? 'P' : ''}
+
+
           </strong>
         </div>
+         {/* {absent &&  <RModal/>} */}
+         
       </td>
     );
   }
@@ -178,7 +192,8 @@ const Calendar = (props) => {
     });
 
 
-
+// console.log(selectedDate.format("MMMM"))
+// console.log(selectedDate.format("YYYY"))
 
     return (
 
