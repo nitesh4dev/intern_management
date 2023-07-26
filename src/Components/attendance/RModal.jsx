@@ -21,7 +21,7 @@ const RModal = (dataForCalendar) => {
     reason: "",
   });
 
-  const [manager, setManager] = React.useState("");
+  const [manager, setManager] = React.useState([{name:'ram'},{name:'ram'},{name:'ram'}]);
   const [selectedDate, setSelectedDate] = React.useState(new Date('2023-06-14'));
 
 
@@ -52,13 +52,17 @@ const RModal = (dataForCalendar) => {
         style={{
           position: "absolute",
           top: "40px",
-          left: "50px",
+          left: "40px",
           border: "black solid 1px",
           borderRadius: "5px",
           cursor: "pointer",
-          fontSize: "14px",
-          padding: "2px",
-          color:"grey"
+          // fontSize: "14px",
+          padding: "1px",
+          // color:"grey"
+          // display:"flex",
+          // justifyContent:"center",
+          // alignItems:"center"
+
 
         }}
         onClick={handleOpen}
@@ -115,15 +119,25 @@ const RModal = (dataForCalendar) => {
                     required
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={manager}
+                    // value={manager}
                     label="manager"
                     onChange={handleChange}
                   >
-                    <MenuItem value={1}>Pawan Kumar</MenuItem>
+                    <MenuItem >Pawan Kumar</MenuItem>
                     <MenuItem value={2}>Parikshit Bangde</MenuItem>
                     <MenuItem value={3}>Piyush Patil</MenuItem>
                   </Select>
                 </FormControl>
+
+
+
+
+
+
+
+
+
+
               </div>
 
               <div style={{ padding: "10px", display: "flex", flexDirection: "column" }} >
