@@ -94,7 +94,7 @@ const Calendar = (props) => {
 
     const isDatePassed = d < currentDate.getDate(); 
     // console.log(isDatePassed)
-    const cellStyle = isDatePassed ? { backgroundColor: "#ccc" } : {};
+    const cellStyle = isDatePassed ? { backgroundColor: "#fff" } : {};
     const cellClassName = isDatePassed ? "passed" : "";
     
     days.push(
@@ -123,12 +123,12 @@ const Calendar = (props) => {
           style={{
             position: "absolute",
             right: "15px",
-            bottom: "15px",
-            fontSize: "20px",
+            bottom: "23px",
+            fontSize: "1.5rem",
             padding:"0px"
           }}>
             <strong>
-          {dataForCalendar[d - 1] === 'D' ? "" : dataForCalendar[d - 1] === "P" ? 'P' : ''}
+          {dataForCalendar[d - 1] === 'D' ? "" : dataForCalendar[d - 1] === "P" ? 'P' : 'A'}
 
 
           </strong>

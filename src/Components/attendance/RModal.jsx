@@ -33,7 +33,7 @@ const style = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
-  height:'400px',
+  height:'450px',
 };
 
 
@@ -118,19 +118,19 @@ const RModal = ({date, month, year}) => {
       <button
         style={{
           position: "absolute",
-          top: "10px",
-          left: "30px",
+          top: "46px",
+          left: "53px",
           // border: "black solid 1px",
-          borderRadius: "50%",
+          // borderRadius: "50%",
           // cursor: "pointer",
-          fontSize: "1.2rem",
-          padding: "13px 15px",
+          fontSize: "0.7rem",
+          padding: "4px 4px",
           // zIndex:"0",
           // height:"20px",
-          backgroundColor:"rgb(9, 3, 15)",
+          // backgroundColor:"#ccc",
           
           // visibility:"hidden"
-          color:"rgb(245, 221, 4)",
+          color:"red",
           fontStyle:"bolder",
           fontWeight:"500"
 
@@ -142,7 +142,7 @@ const RModal = ({date, month, year}) => {
 
         }}
         onClick={handleOpen}
-      > <strong>A</strong>  </button>
+      > <strong>REG</strong>  </button>
     
     <Modal style={{alignItems:"center"}}
         open={open}
@@ -182,14 +182,23 @@ const RModal = ({date, month, year}) => {
     
     <br />
       {/* Input field */}
-      <TextareaAutosize
-        minRows={3}
+      <TextField
+        // minRows={3}
         placeholder="Enter the Reason"
+        label="Reason"
+        variant="outlined"
+        multiline
+        rows={3}
+        fullWidth
         value={textareaValue}
+       
         onChange={handleTextareaChange}
-        style={{ width: '100%', resize: 'none' }}
+        // style={{ width: '100%', resize: 'none' }}
+     
+
         required
       />
+<br />
 <br />
 
       {/* Submit button */}
