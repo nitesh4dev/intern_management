@@ -115,6 +115,14 @@ export default function SelectedLogin() {
               validators={["required"]}
               errorMessages={["This field is required"]}
             />
+            <Typography align="right" style={{marginBottom:"1rem"}}>
+          
+          <Link to="/resetpassword" style={{ color: "red" }}>
+            Forgot Password{" "}
+          </Link>{" "}
+          
+        </Typography>
+            
             <Button
               variant="contained"
               color="primary"

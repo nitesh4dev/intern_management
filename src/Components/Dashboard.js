@@ -23,6 +23,7 @@ import Training from "./Training";
 import TrainingVidoes from "./loggedincomponents/TrainingVidoes";
 import TrainingLessons from "./loggedincomponents/TrainingLessons";
 import  Attendance  from "./attendance/attendance";
+import ResetPassword from "./ResetPassword";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -62,6 +63,10 @@ export default function Dashboard() {
 
           {/* Login component is for new candidates who would like to apply as a new intern */}
           <Route path={`/login`} component={Login} exact /> 
+
+          {/* Reset password */}
+
+          <Route path={`/resetpassword`} component={ResetPassword} />
 
           {/* SelectedLogin component is for onboarding selected candidate shortlisted from somewhere else or from this portal itself. */}
           <Route path={`/selected-login`} component={SelectedLogin} exact />
