@@ -3,6 +3,7 @@ import React , {useState} from 'react'
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import {auth, db } from "../firebase/Firebase";
 import {useHistory} from 'react-router-dom'
+import ResoluteAILogo from "../assets/images/resoluteai-logo.png";
 
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 
@@ -65,7 +66,8 @@ const ResetPassword = () => {
   return (
     <>
     
-        <Grid
+    <Grid container component="main" className={classes.root}>
+      <Grid
         item
         xs={12}
         sm={12}
@@ -73,36 +75,50 @@ const ResetPassword = () => {
         container
         direction="column"
         justify="center"
-       
       >
-    <ValidatorForm onSubmit={(e)=> handleSubmit(e)}
-     style={{display:'flex', justifyContent:"center",alignItems:'center',flexDirection:"column"}}
-     >
+        <Box className={classes.formHolder} mx="auto" style={{marginTop:"1rem"}}>
+          <img src={ResoluteAILogo} alt="FaceGenieLogo" width="50%" />
+
+          <Box textAlign="center" ></Box>
+          <Typography variant="h2" className={classes.heading}>
+            Enter your registered email ID
+          </Typography>
+
+          <ValidatorForm onSubmit={handleSubmit}>
             <TextValidator
-              placeholder="Email Address"
+              placeholder="Please enter your email ID"
               label="Email Address"
               className={classes.textFields}
-            //   fullWidth
+              fullWidth
               variant="outlined"
               name="email"
               value={emailValue}
-              onChange={(e)=>setEmailValue(e.target.value)}
-            style={{width:"100%"}}
-        
-            //   validators={["required", "isEmail"]}
-            //   errorMessages={["This field is required", "Not a valid email ID"]}
+              onChange={(e) => setEmailValue(e.target.value)}
+              validators={["required", "isEmail"]}
+              errorMessages={["This field is required", "Not a valid email ID"]}
             />
-             <Button
+           
+            <Typography align="right" style={{marginBottom:"1rem"}}>
+          
+          
+          
+        </Typography>
+            
+            <Button
               variant="contained"
               color="primary"
-            //   fullWidth
+              fullWidth
               type="submit"
              
             >
-              Reset
+            Reset Password
             </Button>
           </ValidatorForm>
-          </Grid>
+
+          
+        </Box>
+      </Grid>
+    </Grid>
     </>
   )
 }
