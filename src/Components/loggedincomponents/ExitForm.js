@@ -52,6 +52,15 @@ const ExitForm = () => {
   const { user } = useContext(AuthContext);
   const [testimonialVideoFile, setTestimonialVideoFile] = useState("");
   const [testimonialPhotoFile, setTestimonialPhotoFile] = useState("");
+  // const currDate = moment();
+  // const [isEnded, setIsEnded] = useState(false)
+  // console.log(user)
+
+  // useEffect(() => {
+  //   const internshipEndDate = moment(user.userData.candidateDetails?.internshipDetails?.endDate, 'DD-MM-YYYY');
+  //   setIsEnded(!internshipEndDate.isSameOrBefore(currDate))
+  // }, [user])
+
   const [formData, setFormData] = useState({
     email: "",
     name: "",

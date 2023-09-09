@@ -37,6 +37,8 @@ import { AuthContext } from "../Context/AuthContext";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import ImageIcon from "@material-ui/icons/Image";
 import VideoLibraryIcon from "@material-ui/icons/VideoLibrary";
+import moment from "moment";
+
 
 const drawerWidth = 280;
 
@@ -128,7 +130,6 @@ export default function Header() {
   const { title, setTitle } = useContext(DataContext);
   const { user } = useContext(AuthContext);
   const [loggedInListItem, setLoggedInListItem] = useState([]);
-  //Initial component state
   const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
@@ -176,7 +177,7 @@ export default function Header() {
   ];
   useEffect(() => {
     if (!user) return;
-    if (user.userType === "selected-intern")
+    if (user.userType === "selected-intern") {
       setLoggedInListItem([
         {
           text: "Home",
@@ -228,6 +229,7 @@ export default function Header() {
             history.push("/loggedin/attendance");
           },
         },
+
         // {
         //   text: "Openings",
         //   icon: (
@@ -264,16 +266,6 @@ export default function Header() {
         //   },
         // },
         // TOPIC: Disable exit form for now.
-        // {
-        //   text: "Exit Form",
-        //   icon: (
-        //     <ExitToApp color={title === "Exit Form" ? "primary" : "default"} />
-        //   ),
-        //   onClick: () => {
-        //     setTitle("Exit Form");
-        //     history.push("/loggedin/exit-form");
-        //   },
-        // },
         {
           text: "Gallery",
           icon: (
@@ -284,8 +276,19 @@ export default function Header() {
             history.push("/loggedin/gallery");
           },
         },
+        {
+          text: "Exit Form",
+          icon: (
+            <ExitToApp color={title === "Exit Form" ? "primary" : "default"} />
+          ),
+          onClick: () => {
+            setTitle("Exit Form");
+            history.push("/loggedin/exit-form");
+          },
+        }
       ]);
-    else if (user.userType === "new-intern")
+    }
+    else if (user.userType === "new-intern") {
       setLoggedInListItem([
         {
           text: "Home",
@@ -341,7 +344,17 @@ export default function Header() {
           },
         },
       ]);
+    }
   }, [user]);
+
+  // useEffect(() => {
+
+  //   if (internshipEndDate.isSameOrBefore(currDate)) {
+  //     setLoggedInListItem([...loggedInListItem,])
+  //   }
+  // },[])
+
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -426,31 +439,31 @@ export default function Header() {
         <List>
           {user !== null
             ? loggedInListItem.map(({ text, icon, onClick, index }) => {
-                return (
-                  <StyledListItem
-                    button
-                    key={index}
-                    onClick={onClick}
-                    selected={title === text}
-                  >
-                    <ListItemIcon>{icon}</ListItemIcon>
-                    <ListItemText>{text}</ListItemText>
-                  </StyledListItem>
-                );
-              })
+              return (
+                <StyledListItem
+                  button
+                  key={index}
+                  onClick={onClick}
+                  selected={title === text}
+                >
+                  <ListItemIcon>{icon}</ListItemIcon>
+                  <ListItemText>{text}</ListItemText>
+                </StyledListItem>
+              );
+            })
             : listItem.map(({ text, icon, onClick, index }) => {
-                return (
-                  <StyledListItem
-                    button
-                    key={index}
-                    onClick={onClick}
-                    selected={title === text}
-                  >
-                    <ListItemIcon>{icon}</ListItemIcon>
-                    <ListItemText>{text}</ListItemText>
-                  </StyledListItem>
-                );
-              })}
+              return (
+                <StyledListItem
+                  button
+                  key={index}
+                  onClick={onClick}
+                  selected={title === text}
+                >
+                  <ListItemIcon>{icon}</ListItemIcon>
+                  <ListItemText>{text}</ListItemText>
+                </StyledListItem>
+              );
+            })}
         </List>
       </Drawer>
     </div>
