@@ -97,6 +97,7 @@ export default function EditProfile({
 }) {
   const classes = useStyles();
   const { user, setUser } = useContext(AuthContext);
+  console.log(user)
   const candidateDetails = candidateData?.candidateDetails;
   const { callSnackbar } = useContext(SnackbarContext);
   const [loading, setLoading] = useState(false);
@@ -107,7 +108,6 @@ export default function EditProfile({
   const [startDate, setStartDate] = useState(moment().format("YYYY-MM-DD "));
   const [endDate, setEndDate] = useState(moment().format("YYYY-MM-DD "));
 
-  console.log(candidateDetails);
   //form values
   const [formData, setFormData] = useState({
     fullName: "",
@@ -383,12 +383,17 @@ export default function EditProfile({
             `SelectedInterns/${user.userDocId}/${photo.name}`
           );
 
-          await resumeRef
-            .put(resumeFile)
-            .then((snapshot) => panCardRef.put(panCard))
-            .then((snapshot) => aadharCardRef.put(aadharCard))
-            .then((snapshot) => photoRef.put(photo))
-            .catch((err) => console.log(err));
+          // await resumeRef
+          //   .put(resumeFile)
+          //   .then((snapshot) => panCardRef.put(panCard))
+          //   .then((snapshot) => aadharCardRef.put(aadharCard))
+          //   .then((snapshot) => photoRef.put(photo))
+          //   .catch((err) => console.log(err));
+
+          await resumeRef.put(resumeFile).then(snap => console.log(snap)).catch(err => console.log(err))
+          await panCardRef.put(panCard).then(snap => console.log(snap)).catch(err => console.log(err))
+          await aadharCardRef.put(aadharCard).then(snap => console.log(snap)).catch(err => console.log(err))
+          await photoRef.put(photo).then(snap => console.log(snap)).catch(err => console.log(err))
 
           const resumeUrl = await resumeRef.getDownloadURL();
           const aadharCardUrl = await aadharCardRef.getDownloadURL();
