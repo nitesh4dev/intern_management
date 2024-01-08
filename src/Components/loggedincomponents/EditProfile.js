@@ -97,7 +97,6 @@ export default function EditProfile({
 }) {
   const classes = useStyles();
   const { user, setUser } = useContext(AuthContext);
-  console.log(user)
   const candidateDetails = candidateData?.candidateDetails;
   const { callSnackbar } = useContext(SnackbarContext);
   const [loading, setLoading] = useState(false);
